@@ -22,18 +22,22 @@ export const experience: Job[] = [
   {
     company: 'Oracle',
     companySlug: 'oracle',
-    role: 'Site Reliability Developer',
-    period: 'Jan 2024 — Present',
+    role: 'Site Reliability Developer II',
+    period: 'Jan 2024 — Mar 2026',
     location: 'Guadalajara, MX',
     summary:
-      'Maintaining and improving the reliability and security of internal application servers, building Ansible playbooks for the team inventory, designing recovery plans, and contributing to one of the applications in Perl and Apex.',
+      'Supported the team with maintenance of servers running internal applications, improving stability, reliability, and security. Proposed and introduced new tools to strengthen the infrastructure. More recently contributed to the development of one of the applications with support in Perl.\n\nDeployed containerized Prometheus and Grafana to monitor the machines the team was hosting for the internal applications, providing full observability across the fleet.',
     highlights: [
-      'Building and maintaining GitLab CI/CD pipelines for internal services',
-      'Hardening servers and patching vulnerabilities',
-      'Authoring Ansible playbooks for fleet management',
-      'Creating recovery plans and maintenance scripts',
+      'Creating scripts and improving existing automation',
+      'Creating pipelines in GitLab for internal services',
+      'Developing Ansible playbooks for the team inventory',
+      'Improving server stability and fixing vulnerabilities in the machines',
+      'Creating recovery plans for the services',
+      'Deployed containerized Prometheus + Grafana for internal application monitoring',
+      'Maintenance to services and servers',
+      'Supporting every team member as needed',
     ],
-    tech: ['GitLab', 'Ansible', 'Bash', 'Python', 'WebLogic', 'OCI', 'Apex', 'Perl'],
+    tech: ['Git', 'GitLab', 'Bash', 'WebLogic', 'Ansible', 'Apex', 'Python', 'OCI', 'ADE', 'Docker', 'Prometheus', 'Grafana', 'Perl'],
   },
   {
     company: 'Servicios Veterinarios Eläin',
@@ -44,12 +48,12 @@ export const experience: Job[] = [
     summary:
       'Served as lead engineer responsible for project design, structuring, planning, and product delivery for a veterinary clinic business website. Worked alongside a frontend apprentice, teaching Agile methodologies, Git management, and maintaining a well-organized workflow with branches and tickets.\n\nManaged infrastructure on Google Cloud Platform (GCP), handled network management, developed pipelines for automating the development environment with GitHub Actions, and was involved in bug fixing, Docker containerization, direct client interaction, and the full deployment of the application.',
     highlights: [
-      'Project Management & planning, full ownership of product delivery',
+      'Project Management — full ownership of design, planning, and delivery',
       'Teaching and Mentoring a frontend apprentice on Agile + Git',
       'Collaboration and direct Client Interaction',
       'Bug Fixing and Docker containerization',
     ],
-    tech: ['React', 'Node.js', 'Docker', 'GCP', 'GitHub Actions', 'Nginx', 'HTML5', 'Git'],
+    tech: ['GitHub Actions', 'Docker', 'GCP', 'Node.js', 'React', 'HTML5', 'Git', 'Nginx'],
   },
   {
     company: 'Grid Dynamics',
