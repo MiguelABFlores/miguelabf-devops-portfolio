@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const links = [
@@ -12,15 +12,13 @@ const links = [
   { href: 'contact',        label: 'Contact' },
 ];
 
-/* ─── Active section tracker ─────────────────────────────── */
+/* ─── Active section via IntersectionObserver ────────────── */
 function useActiveSection() {
   const [active, setActive] = useState('home');
   useEffect(() => {
     const obs = new IntersectionObserver(
       (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActive(e.target.id);
-        });
+        entries.forEach((e) => { if (e.isIntersecting) setActive(e.target.id); });
       },
       { rootMargin: '-35% 0px -55% 0px' }
     );
@@ -33,66 +31,72 @@ function useActiveSection() {
   return active;
 }
 
-/* ─── Single bubble nav item ─────────────────────────────── */
+/* ─── Single bubble item — label always visible ──────────── */
 function Bubble({
   href, label, active, index,
 }: {
   href: string; label: string; active: boolean; index: number;
 }) {
-  const [hovered, setHovered] = useState(false);
-
   return (
     <motion.a
       href={`#${href}`}
-      onHoverStart={() => setHovered(true)}
-      onHoverEnd={() => setHovered(false)}
-      animate={{
-        y: [0, -4, 0],
-      }}
+      initial={{ x: 60, opacity: 0, scale: 0.4 }}
+      animate={{ x: 0, opacity: 1, scale: 1 }}
       transition={{
-        duration: 3.5 + index * 0.4,
-        repeat: Infinity,
-        ease: 'easeInOut',
-        delay: index * 0.55,
+        type: 'spring',
+        stiffness: 280,
+        damping: 22,
+        delay: index * 0.07,
       }}
-      className="relative flex items-center justify-end group"
+      // subtle per-bubble float
+      style={{ originX: 1 }}
+      className="group flex items-center gap-3 justify-end"
       aria-label={label}
     >
-      {/* Label pill — slides in from right */}
-      <AnimatePresence>
-        {hovered && (
-          <motion.span
-            initial={{ opacity: 0, x: 8, width: 0 }}
-            animate={{ opacity: 1, x: 0, width: 'auto' }}
-            exit={{ opacity: 0, x: 8, width: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden mr-2 whitespace-nowrap font-display text-xs
-                       tracking-[0.2em] uppercase text-glow-ice pointer-events-none"
-          >
-            {label}
-          </motion.span>
-        )}
-      </AnimatePresence>
+      {/* Always-visible label */}
+      <motion.span
+        animate={active
+          ? { opacity: 1, textShadow: '0 0 12px rgba(0,212,255,0.9), 0 0 24px rgba(0,212,255,0.5)' }
+          : { opacity: 1, textShadow: '0 0 0px rgba(0,212,255,0)' }
+        }
+        transition={{ duration: 0.4 }}
+        className={`font-display text-[11px] tracking-[0.25em] uppercase transition-colors duration-300
+                    ${active ? 'text-glow-cyan' : 'text-white/28 group-hover:text-white/60'}`}
+      >
+        {label}
+      </motion.span>
 
-      {/* The bubble */}
+      {/* Bubble */}
       <motion.div
-        animate={active ? { scale: [1, 1.12, 1] } : { scale: 1 }}
-        transition={active ? { duration: 2, repeat: Infinity, ease: 'easeInOut' } : {}}
-        className={`w-10 h-10 rounded-full flex items-center justify-center
+        animate={active
+          ? { scale: [1, 1.1, 1], transition: { duration: 2.2, repeat: Infinity, ease: 'easeInOut' } }
+          : { scale: 1 }
+        }
+        // continuous gentle float (unique period per item)
+        whileHover={{ scale: 1.12 }}
+        className={`relative w-12 h-12 rounded-full flex items-center justify-center shrink-0
                     transition-all duration-300 cursor-pointer
                     ${active
-                      ? 'bg-glow-cyan/25 border-2 border-glow-cyan shadow-[0_0_18px_rgba(0,212,255,0.7),inset_0_0_12px_rgba(0,212,255,0.2)]'
-                      : 'glass border border-glow-cyan/25 hover:border-glow-cyan/60 hover:shadow-[0_0_14px_rgba(0,212,255,0.45)]'
+                      ? 'bg-glow-cyan/25 border-2 border-glow-cyan shadow-[0_0_22px_rgba(0,212,255,0.75),inset_0_0_14px_rgba(0,212,255,0.2)]'
+                      : 'glass border border-glow-cyan/20 group-hover:border-glow-cyan/55 group-hover:shadow-[0_0_14px_rgba(0,212,255,0.4)]'
                     }`}
       >
-        {/* Inner bubble highlight */}
-        <div className={`w-2 h-2 rounded-full transition-all duration-300
+        {/* inner core dot */}
+        <div className={`w-2.5 h-2.5 rounded-full transition-all duration-300
                           ${active
-                            ? 'bg-glow-cyan shadow-[0_0_8px_rgba(0,212,255,1)]'
-                            : 'bg-glow-ice/50 group-hover:bg-glow-cyan'}`}
+                            ? 'bg-glow-cyan shadow-[0_0_10px_rgba(0,212,255,1)]'
+                            : 'bg-glow-ice/40 group-hover:bg-glow-cyan/70'}`}
         />
-        {/* Tiny top glint */}
-        <div className="absolute top-2 left-3 w-1.5 h-1 rounded-full bg-white/30 blur-[1px]" />
+        {/* glint */}
+        <div className="absolute top-2.5 left-3.5 w-1.5 h-1 rounded-full bg-white/30 blur-[1px] pointer-events-none" />
+        {/* active ring ripple */}
+        {active && (
+          <motion.div
+            animate={{ scale: [1, 1.7], opacity: [0.5, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
+            className="absolute inset-0 rounded-full border border-glow-cyan/60 pointer-events-none"
+          />
+        )}
       </motion.div>
     </motion.a>
   );
@@ -102,59 +106,69 @@ function Bubble({
 function SideNav({ active }: { active: string }) {
   return (
     <motion.nav
-      initial={{ opacity: 0, x: 30 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 30 }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
-      className="fixed right-5 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col items-end gap-3"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0, x: 40, transition: { duration: 0.25 } }}
+      transition={{ duration: 0.3 }}
+      className="fixed right-5 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col items-end gap-4"
       aria-label="Section navigation"
     >
       {/* Connector line */}
-      <div className="absolute right-[18px] top-5 bottom-5 w-px
-                      bg-gradient-to-b from-transparent via-glow-cyan/30 to-transparent
-                      pointer-events-none" />
+      <div
+        aria-hidden
+        className="absolute right-[22px] top-6 bottom-6 w-px
+                   bg-gradient-to-b from-transparent via-glow-cyan/25 to-transparent pointer-events-none"
+      />
 
       {links.map((l, i) => (
         <Bubble key={l.href} href={l.href} label={l.label} active={active === l.href} index={i} />
       ))}
 
-      {/* CV bubble — distinct */}
+      {/* CV download bubble */}
       <motion.a
         href="/cv/Miguel-Briseno-DevOps-CV.pdf"
         download
-        animate={{ y: [0, -3, 0] }}
-        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 2.8 }}
-        className="mt-1 w-10 h-10 rounded-full flex items-center justify-center cursor-pointer
-                   bg-gradient-to-br from-glow-cyan/40 to-glow-atlantis/30
-                   border border-glow-cyan/50
-                   shadow-[0_0_16px_rgba(0,212,255,0.5)]
-                   hover:shadow-[0_0_28px_rgba(0,212,255,0.8)] transition-shadow group"
+        initial={{ x: 60, opacity: 0, scale: 0.4 }}
+        animate={{ x: 0, opacity: 1, scale: 1 }}
+        transition={{ type: 'spring', stiffness: 280, damping: 22, delay: links.length * 0.07 }}
+        className="group flex items-center gap-3 justify-end mt-1"
         aria-label="Download CV"
       >
-        <svg viewBox="0 0 20 20" width="14" height="14" fill="none"
-          stroke="currentColor" strokeWidth="2" className="text-glow-ice">
-          <path d="M10 3v10M6 9l4 4 4-4" />
-          <path d="M4 17h12" />
-        </svg>
-        {/* Tooltip */}
-        <span className="absolute right-12 whitespace-nowrap font-display text-xs
-                         tracking-[0.2em] uppercase text-glow-ice
-                         opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          Download CV
+        <span className="font-display text-[11px] tracking-[0.25em] uppercase
+                          text-white/28 group-hover:text-glow-ice transition-colors duration-300">
+          CV
         </span>
+        <div className="relative w-12 h-12 rounded-full flex items-center justify-center shrink-0 cursor-pointer
+                        bg-gradient-to-br from-glow-cyan/30 to-glow-atlantis/20
+                        border border-glow-cyan/40
+                        shadow-[0_0_14px_rgba(0,212,255,0.4)]
+                        group-hover:shadow-[0_0_26px_rgba(0,212,255,0.7)] transition-shadow">
+          <svg viewBox="0 0 20 20" width="15" height="15" fill="none"
+            stroke="currentColor" strokeWidth="2" className="text-glow-ice">
+            <path d="M10 3v10M6 9l4 4 4-4" />
+            <path d="M4 17h12" />
+          </svg>
+          <div className="absolute top-2.5 left-3.5 w-1.5 h-1 rounded-full bg-white/25 blur-[1px]" />
+        </div>
       </motion.a>
     </motion.nav>
   );
 }
 
-/* ─── Top bar (visible only at top of page) ──────────────── */
+/* ─── Top bar ─────────────────────────────────────────────── */
 function TopBar({ open, setOpen }: { open: boolean; setOpen: (v: boolean) => void }) {
   return (
     <motion.header
       initial={{ opacity: 0, y: -10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.35 }}
+      animate={{ opacity: 1, y: 0, x: 0 }}
+      exit={{
+        opacity: 0,
+        // flies toward top-right corner so the eye follows it to the side nav
+        x: '38%',
+        y: -52,
+        scale: 0.82,
+        transition: { duration: 0.55, ease: [0.4, 0, 0.8, 1] },
+      }}
       className="fixed top-0 inset-x-0 z-50"
     >
       <nav className="max-w-6xl mx-auto px-5 md:px-10 py-4 flex items-center justify-between">
@@ -224,7 +238,7 @@ function TopBar({ open, setOpen }: { open: boolean; setOpen: (v: boolean) => voi
   );
 }
 
-/* ─── Mobile floating button (when scrolled) ─────────────── */
+/* ─── Mobile floating nav (when scrolled) ────────────────── */
 function MobileScrolledNav({ open, setOpen }: { open: boolean; setOpen: (v: boolean) => void }) {
   return (
     <>
@@ -281,7 +295,7 @@ export default function Navbar() {
 
   return (
     <>
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {!scrolled && <TopBar key="topbar" open={open} setOpen={setOpen} />}
       </AnimatePresence>
       <AnimatePresence>
