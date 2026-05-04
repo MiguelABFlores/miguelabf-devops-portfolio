@@ -28,11 +28,11 @@ export default function Navbar() {
                   ${scrolled ? 'glass-strong' : 'bg-transparent'}`}
     >
       <nav className="max-w-6xl mx-auto px-5 md:px-10 py-3 md:py-4 flex items-center justify-between">
-        <a href="#home" className="font-display tracking-[0.3em] text-glow-ice text-sm md:text-base group">
-          <span className="text-glow-cyan">M</span>
-          <span className="text-white/90 group-hover:text-glow-cyan transition-colors">·BF</span>
+        <a href="#home" className="font-display tracking-[0.3em] text-glow-ice text-base md:text-lg group">
+          <span className="text-glow-cyan">MA</span>
+          <span className="text-white/90 group-hover:text-glow-cyan transition-colors">BF</span>
         </a>
-        <ul className="hidden md:flex items-center gap-7 text-sm font-display tracking-[0.2em] uppercase">
+        <ul className="hidden md:flex items-center gap-7 text-base font-display tracking-[0.2em] uppercase">
           {links.map((l) => (
             <li key={l.href}>
               <a
