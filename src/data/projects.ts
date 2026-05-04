@@ -30,7 +30,7 @@ export const projects: Project[] = [
     title: 'Repository Emailer',
     repo: 'https://github.com/MiguelABFlores/repository-emailer',
     description:
-      'Python tool that hits the GitHub API to summarize pull requests for a public repo, generates a digest report, and emails it to a scrum master. Useful for async-first teams and stand-up prep.',
+      'Built a Python emailer from scratch that connects to the GitHub API, pulls pull request data from any public repo, and generates a digest report — then sends it automatically via email to a scrum master. A hands-on exercise in Python scripting, API integration, and automation.',
     tech: ['Python', 'GitHub API', 'SMTP'],
   },
   {
@@ -41,17 +41,11 @@ export const projects: Project[] = [
     tech: ['AWS', 'Terraform', 'IaC'],
   },
   {
-    title: 'Terraform + Ansible GitLab Runner',
-    repo: 'https://github.com/MiguelABFlores/terraform-ansible-gitlab-runner',
+    title: 'Snow Boarder Game',
+    repo: 'https://github.com/MiguelABFlores/Snow-Boarder-Game',
     description:
-      'Provisions a self-hosted GitLab Runner with Terraform (infrastructure) and Ansible (configuration). Practical exercise in clean separation of concerns between IaC and config management.',
-    tech: ['Terraform', 'Ansible', 'GitLab', 'Linux'],
-  },
-  {
-    title: 'Unity + Nginx + Docker',
-    repo: 'https://github.com/MiguelABFlores/Unity-Nginx-Docker',
-    description:
-      'Containerizes a Unity WebGL build behind Nginx with brotli/gzip compression. Demonstrates how to ship a non-traditional payload through a standard container deployment pipeline.',
-    tech: ['Docker', 'Nginx', 'Unity WebGL', 'Brotli/Gzip'],
+      'A fun 2D snow boarding game built with Unity and C#. A personal project that shows the creative side — physics-based movement, level design, and game feel.',
+    tech: ['Unity', 'C#', '2D Game Dev'],
+    emoji: '🏂',
   },
 ];
