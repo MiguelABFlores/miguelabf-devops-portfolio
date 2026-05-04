@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html, body {
+  background: #050a1a;
+  color: #e6f4ff;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  background:
+    radial-gradient(ellipse at 50% -10%, #0d2a4d 0%, #050a1a 45%, #020611 100%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(0, 212, 255, 0.35);
+  color: #f0fbff;
+}
+
+/* Glass surface */
+.glass {
+  background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.015));
+  border: 1px solid rgba(125, 249, 255, 0.12);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+
+.glass-strong {
+  background: linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.025));
+  border: 1px solid rgba(125, 249, 255, 0.18);
+  backdrop-filter: blur(18px) saturate(150%);
+}
+
+.glow-text {
+  text-shadow: 0 0 18px rgba(0, 212, 255, 0.55), 0 0 4px rgba(125, 249, 255, 0.6);
+}
+
+.glow-text-soft {
+  text-shadow: 0 0 12px rgba(125, 249, 255, 0.35);
+}
+
+.divider-glow {
+  background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.5), transparent);
+  height: 1px;
+}
+
+/* God-rays from the surface */
+.light-rays {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      100deg,
+      transparent 0px,
+      transparent 60px,
+      rgba(125, 249, 255, 0.04) 90px,
+      rgba(125, 249, 255, 0.08) 110px,
+      transparent 140px,
+      transparent 220px
+    );
+  mix-blend-mode: screen;
+  filter: blur(2px);
+  opacity: 0.6;
+}
+
+.caustics {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 25% 0%, rgba(0, 212, 255, 0.18), transparent 55%),
+    radial-gradient(ellipse at 75% 0%, rgba(177, 78, 255, 0.10), transparent 55%);
+  mix-blend-mode: screen;
+}
+
+/* Vignette toward seafloor */
+.deep-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, transparent 0%, transparent 55%, rgba(2, 6, 17, 0.55) 85%, rgba(2, 6, 17, 0.9) 100%);
+}
+
+/* Tech chip */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid rgba(0, 212, 255, 0.25);
+  color: #b8ecff;
+}
+
+.chip-magenta {
+  background: rgba(177, 78, 255, 0.10);
+  border: 1px solid rgba(177, 78, 255, 0.30);
+  color: #e9d4ff;
+}
+
+/* Section heading underline */
+.section-title::after {
+  content: '';
+  display: block;
+  margin-top: 0.6rem;
+  width: 64px;
+  height: 2px;
+  background: linear-gradient(90deg, #00d4ff, #b14eff);
+  border-radius: 2px;
+  box-shadow: 0 0 14px rgba(0, 212, 255, 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Scroll thumb */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #050a1a; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(#00d4ff66, #b14eff66);
+  border-radius: 8px;
+}
