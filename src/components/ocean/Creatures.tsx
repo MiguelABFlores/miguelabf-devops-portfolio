@@ -21,11 +21,12 @@ function Whale({
         top,
         left: 0,
         pointerEvents: 'none',
+        willChange: 'transform',
         animation: `${flip ? 'swimLeft' : 'swimRight'} ${duration} linear ${delay} infinite`,
       }}
     >
       {/* gentle vertical bob nested inside the horizontal swim */}
-      <div style={{ animation: 'whaleBob 9s ease-in-out infinite' }}>
+      <div style={{ animation: 'whaleBob 9s ease-in-out infinite', willChange: 'transform' }}>
         <svg
           width="260" height="95"
           viewBox="0 0 260 95"
@@ -105,6 +106,7 @@ function Shark({
         top,
         left: 0,
         pointerEvents: 'none',
+        willChange: 'transform',
         animation: `${flip ? 'swimLeft' : 'swimRight'} ${duration} linear ${delay} infinite`,
       }}
     >
@@ -193,12 +195,13 @@ function Jellyfish({
         transform: `scale(${scale})`,
         transformOrigin: 'top left',
         pointerEvents: 'none',
+        willChange: 'transform',
         /* drift in globals.css keyframe */
         animation: `drift ${duration} ease-in-out ${delay} infinite`,
       }}
     >
       {/* separate bob animation nested */}
-      <div style={{ animation: `jellyfish 5s ease-in-out ${delay} infinite` }}>
+      <div style={{ animation: `jellyfish 5s ease-in-out ${delay} infinite`, willChange: 'transform' }}>
         <svg
           width="138" height="210"
           viewBox="0 0 138 210"
@@ -273,6 +276,7 @@ function Squid({
         transform: `scale(${scale})`,
         transformOrigin: 'top left',
         pointerEvents: 'none',
+        willChange: 'transform',
         animation: `squidDrift ${duration} ease-in-out ${delay} infinite`,
       }}
     >

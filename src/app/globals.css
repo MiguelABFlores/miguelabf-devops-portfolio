@@ -14,9 +14,9 @@ html, body {
 
 body {
   font-family: var(--font-inter), system-ui, sans-serif;
-  background:
-    radial-gradient(ellipse at 50% -10%, #0d2a4d 0%, #050a1a 45%, #020611 100%);
-  background-attachment: fixed;
+  /* No background-attachment:fixed — it forces a CPU repaint on every scroll
+     pixel and causes flicker in both Chrome and Safari. The fixed
+     OceanBackground div provides the gradient instead. */
   overflow-x: hidden;
 }
 
