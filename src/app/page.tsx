@@ -14,7 +14,10 @@ export default function Home() {
     <>
       <OceanBackground />
       <Navbar />
-      <main className="relative">
+      {/* relative + z-10 explicitly stacks content above the fixed ocean
+          (z-0). Without this, the static footer would render BELOW the
+          fixed ocean layer in normal painting order. */}
+      <main className="relative z-10">
         <Hero />
         <About />
         <Skills />
@@ -23,7 +26,9 @@ export default function Home() {
         <Certifications />
         <Contact />
       </main>
-      <Footer />
+      <div className="relative z-10">
+        <Footer />
+      </div>
     </>
   );
 }

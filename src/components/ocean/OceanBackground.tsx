@@ -11,12 +11,16 @@ export default function OceanBackground() {
      * will-change:transform keeps it warm on the GPU between frames.
      */
     <div
-      className="fixed inset-0 -z-10 overflow-hidden"
+      className="fixed inset-0 z-0 overflow-hidden"
       style={{
         transform: 'translateZ(0)',
         willChange: 'transform',
         /* Ocean gradient lives here (not on body) so it stays fixed without
-           background-attachment:fixed, which causes scroll-repaint jank. */
+           background-attachment:fixed, which causes scroll-repaint jank.
+           NOTE: we deliberately use z-index:0 (NOT -10) — negative z-index on
+           a transformed/composited element renders inconsistently across
+           Chrome and WebKit. Page content is explicitly stacked above this
+           via z-10 in page.tsx instead. */
         background: 'radial-gradient(ellipse at 50% -10%, #0d2a4d 0%, #050a1a 45%, #020611 100%)',
       }}
       aria-hidden
