@@ -96,7 +96,7 @@ export default function Contact() {
         className="mt-10 flex justify-center"
       >
         <a
-          href="/cv/Miguel-Briseno-DevOps-CV.pdf"
+          href="/cv/Miguel_Angel_Briseno_Flores_DevOps.pdf"
           download
           className="px-6 py-3 rounded-full font-display text-sm tracking-[0.2em] uppercase
                      text-abyss-900 bg-gradient-to-r from-glow-cyan to-glow-ice

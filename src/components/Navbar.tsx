@@ -186,7 +186,7 @@ function SideNav({ active }: { active: string }) {
 
       {/* ── CV download bubble (arcIndex 7) ── */}
       <motion.a
-        href="/cv/Miguel-Briseno-DevOps-CV.pdf"
+        href="/cv/Miguel_Angel_Briseno_Flores_DevOps.pdf"
         download
         initial={{ opacity: 0 }}
         animate={{
@@ -255,7 +255,7 @@ function TopBar({ open, setOpen }: { open: boolean; setOpen: (v: boolean) => voi
           ))}
         </ul>
         <a
-          href="/cv/Miguel-Briseno-DevOps-CV.pdf"
+          href="/cv/Miguel_Angel_Briseno_Flores_DevOps.pdf"
           download
           className="hidden md:inline-block px-4 py-2 rounded-full text-xs font-display
                      tracking-[0.2em] uppercase text-abyss-900
@@ -294,7 +294,7 @@ function TopBar({ open, setOpen }: { open: boolean; setOpen: (v: boolean) => voi
                 </li>
               ))}
               <li>
-                <a href="/cv/Miguel-Briseno-DevOps-CV.pdf" download
+                <a href="/cv/Miguel_Angel_Briseno_Flores_DevOps.pdf" download
                   className="inline-block mt-2 px-4 py-2 rounded-full text-xs text-abyss-900
                              bg-gradient-to-r from-glow-cyan to-glow-ice">
                   Download CV

@@ -3,6 +3,8 @@ name: Build and Deploy
 on:
   push:
     branches: [main]
+    # No paths filter — intentional. Asset-only changes (CV PDF, profile photo)
+    # must also trigger a rebuild so the new files are baked into the image.
   workflow_dispatch:
 
 env:
