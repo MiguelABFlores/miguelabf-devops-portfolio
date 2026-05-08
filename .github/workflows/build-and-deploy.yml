@@ -58,7 +58,7 @@ jobs:
     name: Update GitOps Repo
     needs: build-and-push
     runs-on: [self-hosted, homelab]
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Set image tag
         run: echo "IMAGE_TAG=sha-${GITHUB_SHA::8}" >> $GITHUB_ENV
@@ -86,3 +86,41 @@ jobs:
           git add apps/portfolio/deployment.yaml
           git diff --staged --quiet || git commit -m "ci: update portfolio image to sha-${{ env.IMAGE_TAG }}"
           git push
+
+      - name: Install ArgoCD CLI
+        run: |
+          curl -sSL -o /tmp/argocd \
+            https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+          sudo install -m 555 /tmp/argocd /usr/local/bin/argocd
+          argocd version --client
+
+      - name: Trigger ArgoCD sync and wait for healthy
+        run: |
+          argocd login argocd.192.168.0.240.nip.io \
+            --insecure \
+            --grpc-web \
+            --username admin \
+            --password "${{ secrets.ARGOCD_PASSWORD }}"
+
+          echo "Triggering sync..."
+          argocd app sync portfolio --grpc-web
+
+          echo "Waiting for deployment to be healthy..."
+          argocd app wait portfolio \
+            --health \
+            --grpc-web \
+            --timeout 120
+
+          echo "Deployment complete!"
+          argocd app get portfolio --grpc-web
+
+      - name: Verify site is responding
+        run: |
+          sleep 10
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://miguelabf-devops.com)
+          echo "Site returned HTTP $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "WARNING: Site returned $STATUS instead of 200"
+            exit 1
+          fi
+          echo "Site is live and healthy!"
