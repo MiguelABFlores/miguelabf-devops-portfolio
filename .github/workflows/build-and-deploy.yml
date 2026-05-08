@@ -21,7 +21,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set image tag from commit SHA
-        run: echo "IMAGE_TAG=sha-${GITHUB_SHA::8}" >> $GITHUB_ENV
+        id: vars
+        run: echo "IMAGE_TAG=sha-${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
 
       - name: Login to Harbor
         run: |
@@ -36,23 +37,22 @@ jobs:
           driver-opts: |
             network=host
             image=moby/buildkit:latest
-          config-inline: |
+          buildkitd-config-inline: |
             [registry."harbor.192.168.0.240.nip.io"]
-              http = true
-              insecure = true
+              ca=["/etc/ssl/homelab/homelab-ca.crt"]
 
       - name: Build and push image
         uses: docker/build-push-action@v5
         with:
           context: .
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+            ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.IMAGE_TAG }}
             ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:latest
 
       - name: Output image tag
-        run: echo "Built and pushed ${{ env.IMAGE_TAG }}"
+        run: echo "Built and pushed ${{ steps.vars.outputs.IMAGE_TAG }}"
 
   update-gitops:
     name: Update GitOps Repo
@@ -61,7 +61,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Set image tag
-        run: echo "IMAGE_TAG=sha-${GITHUB_SHA::8}" >> $GITHUB_ENV
+        id: vars
+        run: echo "IMAGE_TAG=sha-${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
 
       - name: Checkout homelab-gitops
         uses: actions/checkout@v4
@@ -73,9 +74,9 @@ jobs:
       - name: Update image tag in deployment
         run: |
           cd homelab-gitops
-          sed -i "s|image: harbor.192.168.0.240.nip.io/portfolio/site:.*|image: harbor.192.168.0.240.nip.io/portfolio/site:${{ env.IMAGE_TAG }}|" \
+          sed -i "s|image: harbor.192.168.0.240.nip.io/portfolio/site:.*|image: harbor.192.168.0.240.nip.io/portfolio/site:${{ steps.vars.outputs.IMAGE_TAG }}|" \
             apps/portfolio/deployment.yaml
-          echo "Updated to: ${{ env.IMAGE_TAG }}"
+          echo "Updated to: ${{ steps.vars.outputs.IMAGE_TAG }}"
           grep "image:" apps/portfolio/deployment.yaml
 
       - name: Commit and push to homelab-gitops
@@ -84,7 +85,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add apps/portfolio/deployment.yaml
-          git diff --staged --quiet || git commit -m "ci: update portfolio image to sha-${{ env.IMAGE_TAG }}"
+          git diff --staged --quiet || git commit -m "ci: update portfolio image to sha-${{ steps.vars.outputs.IMAGE_TAG }}"
           git push
 
       - name: Install ArgoCD CLI
