@@ -72,23 +72,28 @@ export default function Contact() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-40px' }}
             transition={{ duration: 0.5, delay: i * 0.06 }}
-            className="group glass rounded-2xl p-5 flex items-center gap-4
-                       hover:border-glow-cyan/50 hover:shadow-glow hover:-translate-y-0.5 transition-all"
+            className="group glass-strong rounded-2xl p-5 flex items-center gap-4 border-l-2
+                       border-l-glow-cyan/35 hover:border-l-glow-cyan/65
+                       hover:shadow-glow hover:-translate-y-0.5 transition-all"
           >
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center
-                            bg-gradient-to-br from-glow-cyan/20 to-glow-atlantis/15
-                            border border-glow-cyan/25 text-glow-ice group-hover:text-glow-cyan transition-colors">
+            <div className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0
+                            bg-gradient-to-br from-glow-cyan/22 to-glow-atlantis/16
+                            border border-glow-cyan/30
+                            shadow-[inset_0_0_16px_rgba(0,212,255,0.18)]
+                            text-glow-ice group-hover:text-glow-cyan
+                            group-hover:shadow-[inset_0_0_24px_rgba(0,212,255,0.32),0_0_16px_rgba(0,212,255,0.22)]
+                            transition-all">
               {l.icon}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-[10px] tracking-[0.3em] uppercase font-display text-glow-ice/70">
+              <div className="text-[10px] tracking-[0.3em] uppercase font-display text-glow-cyan/80 mb-0.5">
                 {l.label}
               </div>
-              <div className="text-white truncate group-hover:text-glow-cyan transition-colors">
+              <div className="text-white/90 truncate group-hover:text-glow-ice transition-colors text-sm">
                 {l.value}
               </div>
             </div>
-            <span className="text-glow-cyan/60 text-xl">→</span>
+            <span className="text-glow-cyan/55 text-xl group-hover:text-glow-cyan transition-colors">→</span>
           </motion.a>
         ))}
       </div>

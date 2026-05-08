@@ -23,26 +23,33 @@ export default function Certifications() {
             >
               <Wrapper
                 {...wrapperProps}
-                className="block glass rounded-2xl p-5 hover:border-glow-cyan/40 hover:-translate-y-0.5 transition-all h-full"
+                className="block glass-strong rounded-2xl p-5 border-l-2 border-l-glow-cyan/40
+                           hover:border-l-glow-cyan/70 hover:shadow-glow hover:-translate-y-0.5
+                           transition-all h-full group"
               >
                 <div className="flex items-center gap-4">
                   <div
                     aria-hidden
-                    className="w-14 h-14 rounded-xl flex items-center justify-center
-                               bg-gradient-to-br from-glow-cyan/20 to-glow-atlantis/20
-                               border border-glow-cyan/30 font-display text-glow-ice
-                               shadow-[inset_0_0_18px_rgba(0,212,255,0.2)]"
+                    className="w-16 h-16 rounded-xl flex items-center justify-center shrink-0
+                               bg-gradient-to-br from-glow-cyan/25 to-glow-atlantis/20
+                               border border-glow-cyan/35 font-display text-glow-ice text-xl
+                               shadow-[inset_0_0_22px_rgba(0,212,255,0.25),0_0_14px_rgba(0,212,255,0.18)]
+                               group-hover:shadow-[inset_0_0_28px_rgba(0,212,255,0.38),0_0_22px_rgba(0,212,255,0.28)]
+                               transition-shadow"
                   >
                     {c.badge}
                   </div>
-                  <div>
-                    <div className="font-display text-white text-base leading-tight">
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[10px] tracking-[0.28em] uppercase font-display text-glow-cyan/75 mb-1">
+                      {c.issuer}
+                    </div>
+                    <div className="font-display text-glow-ice text-base leading-tight">
                       {c.title}
                     </div>
-                    <div className="text-white/60 text-xs mt-1">{c.issuer}</div>
                     {c.url && (
-                      <div className="mt-2 text-glow-cyan/90 text-[11px] tracking-[0.2em] uppercase">
-                        Verify →
+                      <div className="mt-2 text-glow-cyan/80 text-[11px] tracking-[0.2em] uppercase
+                                      group-hover:text-glow-cyan transition-colors">
+                        Verify credential →
                       </div>
                     )}
                   </div>

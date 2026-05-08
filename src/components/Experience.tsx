@@ -147,14 +147,15 @@ function JobCard({ job, index }: { job: Job; index: number }) {
         </div>
 
         {/* Card */}
-        <div className="flex-1 glass rounded-2xl p-6 md:p-7 hover:border-glow-cyan/35 transition-colors">
+        <div className="flex-1 glass rounded-2xl p-6 md:p-7 border-l-2 border-l-glow-cyan/40
+                        hover:border-l-glow-cyan/70 hover:shadow-glow transition-all">
           {/* Header */}
           <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
             <div>
-              <h3 className="font-display text-xl md:text-2xl text-white leading-tight">
+              <h3 className="font-display text-xl md:text-2xl text-glow-ice leading-tight glow-text-soft">
                 {job.role}
               </h3>
-              <div className="text-glow-cyan font-medium mt-1 text-lg">{job.company}</div>
+              <div className="text-glow-cyan font-display font-medium mt-1 text-base tracking-wide">{job.company}</div>
               <div className="text-white/50 text-xs mt-1 font-display tracking-[0.2em]">
                 {job.period} · {job.location}
               </div>
