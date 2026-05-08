@@ -46,6 +46,7 @@ export const projects: Project[] = [
     description:
       'Built a Python emailer from scratch that connects to the GitHub API, pulls pull request data from any public repo, and generates a digest report — then sends it automatically via email to a scrum master. A hands-on exercise in Python scripting, API integration, and automation.',
     tech: ['Python', 'GitHub API', 'SMTP'],
+    emoji: '📬',
   },
   {
     title: 'AWS Projects',
@@ -53,6 +54,7 @@ export const projects: Project[] = [
     description:
       'A compilation of small AWS infrastructure exercises written in Terraform — VPCs, EC2, IAM, networking. Built while preparing for AWS Cloud Practitioner certification.',
     tech: ['AWS', 'Terraform', 'IaC'],
+    emoji: '☁️',
   },
   {
     title: 'Snow Boarder Game',
