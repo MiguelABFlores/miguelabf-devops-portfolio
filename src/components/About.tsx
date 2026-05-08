@@ -33,16 +33,18 @@ export default function About() {
           </div>
 
           <p className="text-white/88 text-base md:text-lg leading-relaxed">
-            DevOps Engineer with experience in CI/CD tools, Kubernetes, containerization,
-            Ansible, and cloud services. Passionate about solving tasks with a background
-            in <span className="text-glow-ice font-medium">automation</span> — I shine in
-            developing automated environments such as pipelines and deployments.
+            DevOps Engineer with hands-on experience building and operating Kubernetes
+            platforms, GitOps pipelines, and self-hosted infrastructure. Background in
+            Site Reliability Engineering at Oracle — I specialize in turning fragile
+            systems into <span className="text-glow-ice font-medium">self-healing, observable,
+            and declaratively managed</span> ones.
           </p>
           <p className="text-white/80 text-base md:text-lg leading-relaxed">
-            My most notable strengths are the autonomy and independence to complete tasks,
-            plus a love for teaching and sharing solutions with friends and colleagues.
-            Currently a Site Reliability Developer at Oracle, working on internal
-            applications, server reliability, and security.
+            Strong bias for automation and declarative infrastructure — if I&apos;m doing
+            something twice, I&apos;m building a pipeline for it. Former Site Reliability
+            Developer at Oracle (Jan 2024 – Mar 2026), where I led observability initiatives
+            and built internal CI/CD pipelines. Currently building a production-grade
+            homelab platform to sharpen DevOps skills and demonstrate them publicly.
           </p>
 
           {/* ── divider ── */}

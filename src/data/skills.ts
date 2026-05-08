@@ -38,7 +38,7 @@ export const skillGroups: SkillGroup[] = [
   {
     title: 'Monitoring & Observability',
     accent: 'cyan',
-    items: ['Prometheus', 'Grafana', 'Alertmanager', 'LitmusChaos'],
+    items: ['Prometheus', 'Grafana', 'Alertmanager', 'node-exporter', 'LitmusChaos'],
   },
   {
     title: 'Languages & Scripting',

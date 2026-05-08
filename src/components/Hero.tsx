@@ -49,9 +49,10 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.35 }}
           className="mt-8 max-w-2xl mx-auto text-base md:text-lg text-white/75 leading-relaxed"
         >
-          Building automated, reliable, and secure cloud infrastructure with Kubernetes,
-          Terraform, Ansible and CI/CD. I shine in pipelines, deployments, and turning
-          fragile environments into self-healing ones.
+          I build and operate production-grade infrastructure — self-hosted Kubernetes
+          clusters, GitOps pipelines, private container registries, and full observability
+          stacks. Former SRE at Oracle, now focused on DevOps engineering. The site
+          you&apos;re reading runs on my own cluster.
         </motion.p>
 
         <motion.div

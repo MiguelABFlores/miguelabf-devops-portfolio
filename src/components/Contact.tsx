@@ -16,16 +16,6 @@ const links = [
     ),
   },
   {
-    label: 'Phone',
-    value: '+52 331 529 7653',
-    href: 'tel:+523315297653',
-    icon: (
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.6">
-        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.86 19.86 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13 1 .37 1.97.72 2.9a2 2 0 0 1-.45 2.11L8.09 10.1a16 16 0 0 0 6 6l1.36-1.36a2 2 0 0 1 2.11-.45c.93.35 1.9.59 2.9.72A2 2 0 0 1 22 16.92z" />
-      </svg>
-    ),
-  },
-  {
     label: 'LinkedIn',
     value: 'linkedin.com/in/mabrisenof',
     href: 'https://www.linkedin.com/in/mabrisenof/',
