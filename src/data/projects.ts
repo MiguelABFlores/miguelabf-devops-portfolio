@@ -1,13 +1,27 @@
 export type Project = {
   title: string;
   repo: string;
+  liveUrl?: string;
   description: string;
+  highlight?: string;
   tech: string[];
   featured?: boolean;
   emoji?: string;
 };
 
 export const projects: Project[] = [
+  {
+    title: 'Self-Hosted DevOps Platform on Kubernetes',
+    repo: 'https://github.com/MiguelABFlores/homelab-gitops',
+    liveUrl: 'https://miguelabf-devops.com',
+    description:
+      'Production-grade, GitOps-managed Kubernetes platform on a 5-node cluster (1 control plane + 4 workers) bootstrapped with kubeadm on Proxmox VE — Intel i5-13500H, 32 GB RAM. The entire cluster state is declared in Git and reconciled by ArgoCD App-of-Apps: drift is detected and self-healed in ~30 seconds, zero manual kubectl apply after initial bootstrap.\n\nStack: Cilium CNI + eBPF networking · MetalLB bare-metal LoadBalancer · Traefik v3 ingress with Gateway API · Longhorn distributed block storage with 3-way replication · Harbor self-hosted registry with Trivy vulnerability scanning · multi-arch image builds (linux/amd64 + linux/arm64) · kube-prometheus-stack (Prometheus + Grafana + Alertmanager) · Cloudflare Tunnel for zero-trust public exposure — no open inbound firewall ports.',
+    highlight:
+      'The portfolio you\'re reading is deployed on this very cluster — built with a multi-stage Docker image (Node.js → static export → Nginx), pushed to a self-hosted Harbor registry, deployed by ArgoCD from a Git commit, and served publicly through a Cloudflare Tunnel with zero open inbound firewall ports. The site describes the infrastructure it runs on.',
+    tech: ['Kubernetes', 'ArgoCD', 'GitOps', 'Helm', 'Cilium', 'MetalLB', 'Traefik', 'Longhorn', 'Harbor', 'Prometheus', 'Grafana', 'Proxmox VE', 'Docker', 'Cloudflare', 'Linux'],
+    featured: true,
+    emoji: '⚓',
+  },
   {
     title: 'Eläin — Vet Services Website',
     repo: 'https://github.com/MiguelABFlores/vet-services-website',

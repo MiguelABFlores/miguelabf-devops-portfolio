@@ -12,21 +12,29 @@ function GitHubIcon() {
   );
 }
 
+function ExternalLinkIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
+      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+      <polyline points="15 3 21 3 21 9" />
+      <line x1="10" y1="14" x2="21" y2="3" />
+    </svg>
+  );
+}
+
 export default function Projects() {
   return (
     <Section id="projects" eyebrow="Salvage" title="Featured Projects">
       <div className="grid md:grid-cols-2 gap-6">
         {projects.map((p, i) => (
-          <motion.a
+          <motion.div
             key={p.repo}
-            href={p.repo}
-            target="_blank"
-            rel="noopener noreferrer"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.55, delay: i * 0.05 }}
-            className={`group relative block rounded-2xl p-6 transition-all overflow-hidden
+            className={`group relative rounded-2xl p-6 transition-all overflow-hidden
                        ${
                          p.featured
                            ? 'glass-strong md:col-span-2 hover:shadow-glow'
@@ -45,10 +53,32 @@ export default function Projects() {
                 <div className="text-3xl md:text-4xl select-none mt-0.5">{p.emoji}</div>
               )}
               <div className="flex-1 min-w-0">
-                <h3 className="font-display text-lg md:text-xl text-white group-hover:text-glow-ice transition-colors">
+                <h3 className="font-display text-lg md:text-xl text-white group-hover:text-glow-ice transition-colors pr-20">
                   {p.title}
                 </h3>
-                <p className="mt-2 text-white/75 text-sm leading-relaxed">{p.description}</p>
+
+                {/* Description — split on \n\n to render paragraphs */}
+                <div className="mt-2 space-y-2">
+                  {p.description.split('\n\n').map((para, idx) => (
+                    <p key={idx} className="text-white/75 text-sm leading-relaxed">{para}</p>
+                  ))}
+                </div>
+
+                {/* Recursive highlight callout (homelab "meta" moment) */}
+                {p.highlight && (
+                  <div className="mt-4 rounded-xl border border-glow-cyan/30
+                                  bg-gradient-to-r from-glow-cyan/8 to-glow-atlantis/5
+                                  px-4 py-3">
+                    <p className="text-glow-ice text-xs leading-relaxed">
+                      <span className="font-display tracking-wide text-glow-cyan uppercase text-[10px]
+                                       mr-2 align-middle">
+                        Meta
+                      </span>
+                      {p.highlight}
+                    </p>
+                  </div>
+                )}
+
                 <div className="mt-4 flex flex-wrap gap-2">
                   {p.tech.map((t) => (
                     <span key={t} className="chip">
@@ -56,13 +86,42 @@ export default function Projects() {
                     </span>
                   ))}
                 </div>
-                <div className="mt-5 inline-flex items-center gap-2 text-glow-cyan/90 text-xs tracking-[0.2em] font-display uppercase">
-                  <GitHubIcon />
-                  View on GitHub →
+
+                {/* Links row */}
+                <div className="mt-5 flex flex-wrap items-center gap-5">
+                  <a
+                    href={p.repo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-glow-cyan/90 text-xs
+                               tracking-[0.2em] font-display uppercase
+                               hover:text-glow-cyan transition-colors"
+                  >
+                    <GitHubIcon />
+                    View on GitHub →
+                  </a>
+                  {p.liveUrl && (
+                    <a
+                      href={p.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-glow-ice/80 text-xs
+                                 tracking-[0.2em] font-display uppercase
+                                 hover:text-glow-ice transition-colors"
+                    >
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full
+                                         rounded-full bg-glow-cyan opacity-75" />
+                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-glow-cyan" />
+                      </span>
+                      <ExternalLinkIcon />
+                      Live Site →
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
-          </motion.a>
+          </motion.div>
         ))}
       </div>
     </Section>

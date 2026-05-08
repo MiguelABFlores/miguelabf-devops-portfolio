@@ -6,14 +6,24 @@ export type SkillGroup = {
 
 export const skillGroups: SkillGroup[] = [
   {
-    title: 'CI/CD',
+    title: 'CI/CD & GitOps',
     accent: 'cyan',
-    items: ['GitLab CI/CD', 'GitHub Actions', 'Jenkins'],
+    items: ['GitLab CI/CD', 'GitHub Actions', 'Jenkins', 'ArgoCD', 'GitOps'],
   },
   {
     title: 'Containers & Orchestration',
     accent: 'magenta',
-    items: ['Docker', 'Docker Compose', 'Containerd', 'Kubernetes (k8s, k3s)', 'Helm'],
+    items: ['Docker', 'Docker Compose', 'Containerd', 'Kubernetes', 'Helm', 'kubeadm', 'Proxmox VE'],
+  },
+  {
+    title: 'Networking & Ingress',
+    accent: 'cyan',
+    items: ['Traefik', 'Cilium', 'MetalLB', 'Nginx', 'Cloudflare'],
+  },
+  {
+    title: 'Storage & Registry',
+    accent: 'magenta',
+    items: ['Longhorn', 'Harbor', 'Trivy'],
   },
   {
     title: 'Cloud Platforms',
@@ -26,9 +36,9 @@ export const skillGroups: SkillGroup[] = [
     items: ['Terraform', 'Ansible'],
   },
   {
-    title: 'Monitoring & Logging',
+    title: 'Monitoring & Observability',
     accent: 'cyan',
-    items: ['Prometheus', 'Grafana', 'LitmusChaos'],
+    items: ['Prometheus', 'Grafana', 'Alertmanager', 'LitmusChaos'],
   },
   {
     title: 'Languages & Scripting',
@@ -38,6 +48,6 @@ export const skillGroups: SkillGroup[] = [
   {
     title: 'Other',
     accent: 'cyan',
-    items: ['Git', 'GitLab', 'MongoDB', 'Nginx', 'WebLogic', 'Apex'],
+    items: ['Git', 'GitLab', 'MongoDB', 'Linux', 'WebLogic', 'Apex'],
   },
 ];
