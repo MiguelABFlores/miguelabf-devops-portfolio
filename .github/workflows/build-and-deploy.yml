@@ -1,0 +1,84 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:   # permite trigger manual desde la UI de GitHub
+
+env:
+  HARBOR_REGISTRY: harbor.192.168.0.240.nip.io
+  HARBOR_PROJECT: portfolio
+  IMAGE_NAME: site
+  GITOPS_REPO: MiguelABFlores/homelab-gitops
+
+jobs:
+  build-and-push:
+    name: Build & Push to Harbor
+    runs-on: self-hosted   # usa tu runner en el cluster
+    steps:
+      - name: Checkout portfolio source
+        uses: actions/checkout@v4
+
+      - name: Set image tag from commit SHA
+        run: echo "IMAGE_TAG=sha-${GITHUB_SHA::8}" >> $GITHUB_ENV
+
+      - name: Login to Harbor
+        run: |
+          echo "${{ secrets.HARBOR_PASSWORD }}" | \
+          docker login ${{ env.HARBOR_REGISTRY }} \
+            --username ${{ secrets.HARBOR_USERNAME }} \
+            --password-stdin
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: |
+            network=host
+
+      - name: Build and push multi-arch image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+            ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:latest
+          cache-from: type=registry,ref=${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
+
+      - name: Output image tag
+        run: echo "Built and pushed ${{ env.IMAGE_TAG }}"
+
+  update-gitops:
+    name: Update GitOps Repo
+    needs: build-and-push
+    runs-on: self-hosted
+    steps:
+      - name: Set image tag
+        run: echo "IMAGE_TAG=sha-${GITHUB_SHA::8}" >> $GITHUB_ENV
+
+      - name: Checkout homelab-gitops
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.GITOPS_REPO }}
+          token: ${{ secrets.GITOPS_PAT }}
+          path: homelab-gitops
+
+      - name: Update image tag in deployment
+        run: |
+          cd homelab-gitops
+          sed -i "s|image: harbor.192.168.0.240.nip.io/portfolio/site:.*|image: harbor.192.168.0.240.nip.io/portfolio/site:${{ env.IMAGE_TAG }}|" \
+            apps/portfolio/deployment.yaml
+          
+          echo "Updated to: ${{ env.IMAGE_TAG }}"
+          grep "image:" apps/portfolio/deployment.yaml
+
+      - name: Commit and push to homelab-gitops
+        run: |
+          cd homelab-gitops
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add apps/portfolio/deployment.yaml
+          git commit -m "ci: update portfolio image to sha-${{ env.IMAGE_TAG }}"
+          git push
