@@ -268,7 +268,7 @@ function Anglerfish({
       pointerEvents: 'none', willChange: 'transform',
       animation: 'squidDrift 48s ease-in-out 0s infinite',
     }}>
-      <svg width="220" height="260" viewBox="0 0 220 260" style={{
+      <svg width="220" height="295" viewBox="0 -35 220 295" style={{
         filter: `drop-shadow(0 0 22px rgba(177,78,255,0.28)) drop-shadow(0 0 8px rgba(177,78,255,0.18))`,
       }}>
         <defs>
