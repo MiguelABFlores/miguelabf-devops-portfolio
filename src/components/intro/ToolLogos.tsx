@@ -19,7 +19,11 @@ const tools = [
   { slug: 'kubernetes', name: 'Kubernetes', color: '326CE5' },
   { slug: 'argo',       name: 'Argo CD',    color: 'EF7B4D' },
   { slug: 'docker',     name: 'Docker',     color: '2496ED' },
-  { slug: 'helm',       name: 'Helm',       color: '0F1689' },
+  // Helm's primary brand color is the very dark navy 0F1689, which is
+  // invisible on our dark-glass icon background. Switching to 277A9F,
+  // Helm's official secondary teal, keeps it on-brand while staying
+  // visible.
+  { slug: 'helm',       name: 'Helm',       color: '277A9F' },
   { slug: 'github',     name: 'GitHub',     color: 'FFFFFF' },
   { slug: 'prometheus', name: 'Prometheus', color: 'E6522C' },
   { slug: 'grafana',    name: 'Grafana',    color: 'F46800' },

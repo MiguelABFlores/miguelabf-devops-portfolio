@@ -38,7 +38,12 @@ export default function Submarine() {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden
-          style={{ display: 'block' }}
+          preserveAspectRatio="xMidYMid meet"
+          style={{
+            display: 'block',
+            maxWidth: '100%',         // shrink-to-fit on narrow screens
+            height: 'auto',           // maintain aspect ratio while shrinking
+          }}
         >
           <defs>
             {/* Hull body - abyssal teal with subtle highlight */}

@@ -43,7 +43,7 @@ export default function IntroSplash({ onEnter }: Props) {
         opacity: 0,
         transition: { duration: 1.6, ease: [0.5, 0, 0.75, 0] },
       }}
-      className="fixed inset-0 z-[100] overflow-hidden"
+      className="fixed inset-0 z-[100] overflow-y-auto overflow-x-hidden splash-scroll"
       aria-label="Welcome to the portfolio"
       role="dialog"
       style={{
@@ -415,7 +415,7 @@ export default function IntroSplash({ onEnter }: Props) {
       {/* CONTENT - Eyebrow + Submarine + copy + helm              */}
       {/* ═══════════════════════════════════════════════════════ */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen
-                      px-6 py-12 text-center">
+                      px-6 py-6 md:py-10 text-center">
 
         {/* ── Eyebrow (no emoji, larger text + lines) ── */}
         <motion.div

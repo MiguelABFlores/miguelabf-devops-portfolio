@@ -289,6 +289,19 @@ html.mabf-intro-seen [data-intro-splash] {
   display: none !important;
 }
 
+/* Hide scrollbar on the splash overlay (Firefox + WebKit).
+   The overlay needs overflow-y:auto so the helm button is reachable
+   on short viewports, but a visible scrollbar would distract from
+   the scene. Scrolling itself stays functional (mouse wheel, touch,
+   keyboard). */
+.splash-scroll {
+  scrollbar-width: none;       /* Firefox */
+  -ms-overflow-style: none;    /* legacy Edge / IE */
+}
+.splash-scroll::-webkit-scrollbar {
+  display: none;               /* Chrome, Safari */
+}
+
 /* Scroll thumb */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: #050a1a; }
