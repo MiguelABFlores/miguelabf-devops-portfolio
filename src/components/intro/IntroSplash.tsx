@@ -320,35 +320,47 @@ export default function IntroSplash({ onEnter }: Props) {
 
         {/* ═══════════════════════════════════════════════════════ */}
         {/* ABYSS FILL - eliminates the hard horizontal line where  */}
-        {/* the foreground wave SVG used to end. Starts at exactly  */}
-        {/* the wave's bottom y (78 + 140 = 218px) with the SAME    */}
-        {/* color as the wave fill, then gradually darkens to the   */}
-        {/* deep ocean. Seamless transition from waves to abyss.    */}
+        {/* the foreground wave SVG used to end.                    */}
+        {/*                                                         */}
+        {/* Two-part construction prevents banding:                 */}
+        {/*  1. A 6px overlap (top: 212 vs wave-end at 218) hides   */}
+        {/*     any sub-pixel anti-aliasing edge from the SVG.      */}
+        {/*  2. A simple two-stop gradient (no intermediate stops)  */}
+        {/*     produces a single smooth interpolation, which       */}
+        {/*     monitors render without visible step-banding.       */}
+        {/*  3. A faint SVG-noise dither overlay scatters any       */}
+        {/*     remaining 8-bit-color banding into uniform grain.   */}
         {/* ═══════════════════════════════════════════════════════ */}
         <div
           className="absolute inset-x-0 pointer-events-none"
           style={{
-            top: 218,           // wave 4: top=78px + height=140px
+            top: 212,           // 6px overlap with wave 4 bottom
             bottom: 0,
-            background: `
-              linear-gradient(180deg,
-                #020e1a 0%,
-                #020c18 25%,
-                #010912 55%,
-                #00060e 85%,
-                #00040a 100%)
-            `,
+            background: 'linear-gradient(180deg, #020e1a 0%, #00040a 100%)',
           }}
         />
-        {/* Subtle deep-light shimmer drifting in the abyss for life */}
+        {/* Anti-banding dither - a tiny inline SVG noise pattern */}
+        <div
+          className="absolute inset-x-0 pointer-events-none mix-blend-overlay opacity-40"
+          style={{
+            top: 212,
+            bottom: 0,
+            backgroundImage:
+              `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.10 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`,
+            backgroundSize: '240px 240px',
+          }}
+        />
+        {/* Subtle deep-light shimmer drifting in the abyss for life.
+            Top is set further down (260) so its edge sits well inside
+            the abyss, not at the wave/abyss boundary. */}
         <div
           className="absolute inset-x-0 pointer-events-none mix-blend-screen"
           style={{
-            top: 218,
+            top: 260,
             bottom: 0,
             background: `
-              radial-gradient(ellipse at 28% 30%, rgba(125,249,255,0.08), transparent 55%),
-              radial-gradient(ellipse at 72% 65%, rgba(125,249,255,0.05), transparent 60%)
+              radial-gradient(ellipse at 28% 40%, rgba(125,249,255,0.06), transparent 60%),
+              radial-gradient(ellipse at 72% 70%, rgba(125,249,255,0.04), transparent 65%)
             `,
             animation: 'mistDrift 22s ease-in-out infinite',
           }}
@@ -446,17 +458,14 @@ export default function IntroSplash({ onEnter }: Props) {
           </h1>
 
           <p className="mt-5 md:mt-6 text-sm md:text-base text-white/85 leading-relaxed max-w-xl mx-auto">
-            This page runs on a <span className="text-glow-ice">private cloud platform</span>
-            {' '}I designed and operate end-to-end. The system is engineered for
-            {' '}<span className="text-glow-ice">guaranteed uptime</span>: servers monitor
-            each other and reroute traffic around failures automatically, with no manual
-            intervention. Every code change reaches production through an
-            {' '}<span className="text-glow-ice">automated GitOps pipeline</span> (deployments
-            triggered by Git commits, not by hand), so releases are predictable and
-            reversible. <span className="text-glow-ice">Real-time observability</span> catches
-            problems before users notice them, and the platform is exposed through a
-            {' '}<span className="text-glow-ice">secure tunnel</span> that keeps every inbound
-            network port closed by default. Reliability, scalability, and security, by design.
+            You&apos;re looking at a website that runs on my own
+            {' '}<span className="text-glow-ice">group of computers at home</span>.
+            They <span className="text-glow-ice">work like a team</span>: if one stops
+            working, another takes over right away, so
+            {' '}<span className="text-glow-ice">the site never goes offline</span>.
+            {' '}<span className="text-glow-ice">Updates ship by themselves</span>, and the
+            system keeps an eye on itself to catch problems before they happen. Reliable,
+            safe, and built to grow.
           </p>
         </motion.div>
 
