@@ -11,7 +11,7 @@ type Props = {
   className?: string;
 };
 
-/* depth "coordinates" per section — purely decorative */
+/* depth "coordinates" per section - purely decorative */
 const depthMap: Record<string, string> = {
   about:          '12°N · 86°W · −120m',
   skills:         '12°N · 86°W · −340m',

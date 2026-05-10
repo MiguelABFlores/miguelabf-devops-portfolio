@@ -16,9 +16,9 @@ const orbitron = Orbitron({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://miguelabf-devops.com'),
-  title: 'Miguel Briseño — DevOps Engineer',
+  title: 'Miguel Briseño - DevOps Engineer',
   description:
-    'DevOps Engineer in Guadalajara, Mexico. CI/CD, Kubernetes, Terraform, AWS, Ansible — building automated, reliable, and secure cloud infrastructure.',
+    'DevOps Engineer in Guadalajara, Mexico. CI/CD, Kubernetes, Terraform, AWS, Ansible - building automated, reliable, and secure cloud infrastructure.',
   keywords: [
     'DevOps Engineer',
     'SRE',
@@ -32,11 +32,11 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'Miguel Angel Briseño Flores' }],
   openGraph: {
-    title: 'Miguel Briseño — DevOps Engineer',
+    title: 'Miguel Briseño - DevOps Engineer',
     description:
       'DevOps Engineer specialized in CI/CD, Kubernetes, and cloud automation.',
     url: 'https://miguelabf-devops.com',
-    siteName: 'Miguel Briseño — Portfolio',
+    siteName: 'Miguel Briseño - Portfolio',
     type: 'website',
   },
   icons: { icon: '/favicon.svg' },
@@ -49,7 +49,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${orbitron.variable}`}>
       <head>
         {/*
-          Splash gate — runs synchronously BEFORE the body paints.
+          Splash gate - runs synchronously BEFORE the body paints.
           - First visit:   no class added → static-rendered splash markup
                            is visible from frame 1 (no portfolio flash).
           - Repeat visit:  sessionStorage flag is set → adds

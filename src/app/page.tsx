@@ -13,7 +13,7 @@ import IntroGate from '@/components/intro/IntroGate';
 export default function Home() {
   return (
     <>
-      {/* Splash overlay — shows once per session, dives down on click,
+      {/* Splash overlay - shows once per session, dives down on click,
           revealing the portfolio underneath (which is always rendered). */}
       <IntroGate />
 

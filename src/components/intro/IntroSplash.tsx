@@ -1,27 +1,28 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Caravel from './Caravel';
+import Submarine from './Submarine';
 import HelmButton from './HelmButton';
 
 /* ───────────────────────────────────────────────────────────────
-   IntroSplash — full-screen overlay shown before the portfolio.
+   IntroSplash - full-screen overlay shown before the portfolio.
 
    Scene composition (back → front):
-   1. Deep indigo→teal sky gradient
-   2. Star field (slow twinkle)
-   3. Aurora swirls (cyan + magenta) drifting across upper sky
-   4. Distant moon with corona halo
-   5. Volumetric god-rays angled from the moon
-   6. Distant Atlantean spires emerging from horizon mist
-   7. Mist band at horizon (parallax drift)
-   8. Animated multi-layer waves with foam highlights
-   9. Floating bioluminescent spores drifting upward
-   10. Caravel + welcome copy + helm CTA
+   1. Sky+sea continuous gradient (no hard horizon line)
+   2. Star field with twinkle
+   3. Aurora swirls drifting in the upper sky
+   4. Realistic textured moon (no glow halo, just soft atmospheric bloom)
+   5. SVG-based volumetric god-ray wedges from the moon (replaces
+      the old repeating-linear-gradient that caused right-side banding)
+   6. Distant Atlantean spires silhouette
+   7. Soft horizon mist band with two animated fog layers (the
+      "smooth gradient haze" the user picked)
+   8. Wave layers tucked under the mist so there's no hard sea/sky line
+   9. Bioluminescent spores drifting upward
+   10. Submarine + welcome copy + helm CTA
 
-   `data-intro-splash` is read by globals.css to suppress this
-   element via display:none on repeat-visit (set in layout's
-   inline script).
+   `data-intro-splash` is read by globals.css to hide this element
+   via display:none on repeat-visit (set in layout's inline script).
    ─────────────────────────────────────────────────────────────── */
 type Props = {
   onEnter: () => void;
@@ -35,7 +36,6 @@ export default function IntroSplash({ onEnter }: Props) {
       initial={{ opacity: 1 }}
       animate={{ opacity: 1 }}
       exit={{
-        /* DIVE — overlay shoots upward + zooms slightly while fading */
         y: '-110vh',
         scale: 1.4,
         opacity: 0,
@@ -45,25 +45,28 @@ export default function IntroSplash({ onEnter }: Props) {
       aria-label="Welcome to the portfolio"
       role="dialog"
       style={{
+        /* One continuous gradient with a wide blend zone around 60-72%
+           so sky and sea fade through each other (no hard horizon). */
         background: `
-          radial-gradient(ellipse at 72% 18%, rgba(28,80,128,0.55), transparent 55%),
+          radial-gradient(ellipse at 76% 22%, rgba(28,80,128,0.45), transparent 55%),
           linear-gradient(180deg,
             #050818 0%,
-            #08152e 22%,
-            #0d2748 44%,
-            #0a3050 60%,
-            #051a2d 78%,
+            #08152e 18%,
+            #0c2244 38%,
+            #0d2a48 56%,
+            #0a2640 70%,
+            #061a30 85%,
             #020a18 100%)
         `,
       }}
     >
       {/* ═══════════════════════════════════════════════════════ */}
-      {/* LAYER 1 — Star field                                     */}
+      {/* LAYER 1 - Star field                                     */}
       {/* ═══════════════════════════════════════════════════════ */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
-        {Array.from({ length: 56 }).map((_, i) => {
+        {Array.from({ length: 64 }).map((_, i) => {
           const left = (i * 73) % 100;
-          const top  = (i * 41) % 50; // upper half only
+          const top  = (i * 41) % 50;
           const size = 0.8 + (i % 4) * 0.6;
           const delay = (i % 7) * 0.5;
           const dur   = 3 + (i % 5);
@@ -85,7 +88,8 @@ export default function IntroSplash({ onEnter }: Props) {
       </div>
 
       {/* ═══════════════════════════════════════════════════════ */}
-      {/* LAYER 2 — Aurora swirls (upper sky)                     */}
+      {/* LAYER 2 - Aurora swirls (toned down so the right side    */}
+      {/* doesn't look "glitchy" anymore)                          */}
       {/* ═══════════════════════════════════════════════════════ */}
       <div
         className="absolute inset-x-0 top-0 h-[55%] pointer-events-none mix-blend-screen"
@@ -95,118 +99,59 @@ export default function IntroSplash({ onEnter }: Props) {
           className="absolute"
           style={{
             top: '8%', left: '-10%', width: '70%', height: '34%',
-            background: 'radial-gradient(ellipse at center, rgba(0,212,255,0.25), rgba(125,249,255,0.10) 35%, transparent 70%)',
-            filter: 'blur(28px)',
-            animation: 'auroraDrift 18s ease-in-out infinite',
+            background: 'radial-gradient(ellipse at center, rgba(0,212,255,0.18), rgba(125,249,255,0.06) 35%, transparent 70%)',
+            filter: 'blur(48px)',
+            animation: 'auroraDrift 22s ease-in-out infinite',
           }}
         />
         <div
           className="absolute"
           style={{
             top: '14%', left: '36%', width: '60%', height: '28%',
-            background: 'radial-gradient(ellipse at center, rgba(177,78,255,0.22), rgba(177,78,255,0.06) 40%, transparent 70%)',
-            filter: 'blur(32px)',
-            animation: 'auroraDrift 24s ease-in-out -8s infinite reverse',
-          }}
-        />
-        <div
-          className="absolute"
-          style={{
-            top: '4%', left: '55%', width: '50%', height: '22%',
-            background: 'radial-gradient(ellipse at center, rgba(125,249,255,0.18), transparent 65%)',
-            filter: 'blur(22px)',
-            animation: 'auroraDrift 14s ease-in-out -3s infinite',
+            background: 'radial-gradient(ellipse at center, rgba(177,78,255,0.14), rgba(177,78,255,0.04) 40%, transparent 70%)',
+            filter: 'blur(54px)',
+            animation: 'auroraDrift 28s ease-in-out -10s infinite reverse',
           }}
         />
       </div>
 
       {/* ═══════════════════════════════════════════════════════ */}
-      {/* LAYER 3 — Distant moon with corona                      */}
+      {/* LAYER 3 - Realistic textured moon                        */}
       {/* ═══════════════════════════════════════════════════════ */}
       <div className="absolute pointer-events-none" aria-hidden
-        style={{ left: '74%', top: '13%' }}>
-        {/* outer corona */}
-        <div
-          style={{
-            width: '380px', height: '380px',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(125,249,255,0.20), rgba(0,212,255,0.08) 35%, transparent 70%)',
-            filter: 'blur(12px)',
-            position: 'absolute',
-            transform: 'translate(-50%, -50%)',
-          }}
-        />
-        {/* mid halo */}
+        style={{ left: '78%', top: '15%' }}>
+        {/* very subtle atmospheric bloom (small, low-opacity - not   */}
+        {/* the dramatic halo of before)                              */}
         <div
           style={{
             width: '180px', height: '180px',
             borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(225,245,255,0.55), rgba(125,249,255,0.20) 45%, transparent 75%)',
-            filter: 'blur(4px)',
+            background: 'radial-gradient(circle, rgba(220,240,255,0.18), rgba(180,220,250,0.06) 35%, transparent 70%)',
+            filter: 'blur(14px)',
             position: 'absolute',
             transform: 'translate(-50%, -50%)',
           }}
         />
-        {/* moon body */}
-        <div
-          style={{
-            width: '88px', height: '88px',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle at 38% 36%, #f6fdff 0%, #d4eff7 40%, #88c0d4 80%, #4a7d92 100%)',
-            position: 'absolute',
-            transform: 'translate(-50%, -50%)',
-            boxShadow: '0 0 60px rgba(125,249,255,0.45), inset -8px -10px 22px rgba(20,40,60,0.55)',
-          }}
-        />
-        {/* moon craters */}
-        {[
-          [-18, -6, 8], [4, 12, 5], [12, -16, 4], [-8, 18, 6], [20, 0, 3],
-        ].map(([dx, dy, r], i) => (
-          <div key={i}
-            style={{
-              position: 'absolute',
-              left: `${dx}px`, top: `${dy}px`,
-              width: `${r}px`, height: `${r}px`,
-              borderRadius: '50%',
-              background: 'rgba(40,75,95,0.35)',
-              transform: 'translate(-50%, -50%)',
-            }}
-          />
-        ))}
+        <RealisticMoon />
       </div>
 
       {/* ═══════════════════════════════════════════════════════ */}
-      {/* LAYER 4 — Volumetric god-rays from the moon             */}
+      {/* LAYER 4 - Volumetric god-rays (SVG-based, no banding)    */}
       {/* ═══════════════════════════════════════════════════════ */}
-      <div
-        className="absolute pointer-events-none mix-blend-screen"
-        aria-hidden
-        style={{
-          left: '60%', top: '8%', width: '50%', height: '60%',
-          background: `
-            repeating-linear-gradient(
-              196deg,
-              transparent 0px, transparent 90px,
-              rgba(125,249,255,0.05) 120px, rgba(125,249,255,0.10) 138px,
-              transparent 168px, transparent 256px
-            )`,
-          filter: 'blur(2px)',
-          opacity: 0.7,
-        }}
-      />
+      <SvgGodRays />
 
       {/* ═══════════════════════════════════════════════════════ */}
-      {/* LAYER 5 — Distant Atlantean spires (horizon silhouette) */}
+      {/* LAYER 5 - Distant Atlantean spires (horizon silhouette) */}
       {/* ═══════════════════════════════════════════════════════ */}
       <div
         className="absolute inset-x-0 pointer-events-none"
         aria-hidden
-        style={{ top: '50%', height: '18%' }}
+        style={{ top: '54%', height: '14%' }}
       >
         <svg
           viewBox="0 0 1440 200" preserveAspectRatio="none"
           width="100%" height="100%"
-          style={{ display: 'block', opacity: 0.55, filter: 'blur(0.6px)' }}
+          style={{ display: 'block', opacity: 0.45, filter: 'blur(0.8px)' }}
         >
           <defs>
             <linearGradient id="spireGrad" x1="0" y1="0" x2="0" y2="1">
@@ -215,7 +160,6 @@ export default function IntroSplash({ onEnter }: Props) {
               <stop offset="100%" stopColor="#040a18" stopOpacity="1.0" />
             </linearGradient>
           </defs>
-          {/* Far Atlantean cityline — domes, spires, towers */}
           <path
             d="M0,200 L0,150
                L60,150  L80,120 L100,150
@@ -230,7 +174,6 @@ export default function IntroSplash({ onEnter }: Props) {
                L1380,150 L1400,118 L1420,150 L1440,150 L1440,200 Z"
             fill="url(#spireGrad)"
           />
-          {/* tiny pinpoint lights on the spires (cyan glow) */}
           {[
             [80, 124, 0.85], [165, 114, 0.95], [268, 78, 1], [400, 116, 0.8],
             [440, 114, 0.7], [620, 96, 1], [640, 80, 1], [660, 96, 0.9],
@@ -246,16 +189,27 @@ export default function IntroSplash({ onEnter }: Props) {
       </div>
 
       {/* ═══════════════════════════════════════════════════════ */}
-      {/* LAYER 6 — Horizon mist band (parallax drift)            */}
+      {/* LAYER 6 - SOFT HORIZON HAZE BAND (the smooth blend)     */}
+      {/* Three stacked soft fog layers crossing the horizon.     */}
+      {/* This is what hides the hard sea/sky line.               */}
       {/* ═══════════════════════════════════════════════════════ */}
       <div
         className="absolute inset-x-0 pointer-events-none"
         aria-hidden
         style={{
-          top: '57%', height: '12%',
-          background: 'linear-gradient(180deg, transparent 0%, rgba(180,220,235,0.18) 35%, rgba(140,200,225,0.30) 60%, transparent 100%)',
-          filter: 'blur(8px)',
-          animation: 'mistDrift 22s ease-in-out infinite',
+          top: '52%', height: '22%',
+          background: 'linear-gradient(180deg, transparent 0%, rgba(140,200,225,0.08) 30%, rgba(180,225,240,0.18) 55%, rgba(140,200,225,0.10) 80%, transparent 100%)',
+          filter: 'blur(14px)',
+        }}
+      />
+      <div
+        className="absolute inset-x-0 pointer-events-none"
+        aria-hidden
+        style={{
+          top: '58%', height: '14%',
+          background: 'linear-gradient(180deg, transparent 0%, rgba(125,249,255,0.10) 50%, transparent 100%)',
+          filter: 'blur(20px)',
+          animation: 'mistDrift 26s ease-in-out infinite',
         }}
       />
       <div
@@ -263,28 +217,41 @@ export default function IntroSplash({ onEnter }: Props) {
         aria-hidden
         style={{
           top: '60%', height: '10%',
-          background: 'linear-gradient(180deg, transparent 0%, rgba(125,249,255,0.18) 50%, transparent 100%)',
-          filter: 'blur(14px)',
-          animation: 'mistDrift 14s ease-in-out -6s infinite reverse',
+          background: 'linear-gradient(180deg, transparent 0%, rgba(190,225,240,0.14) 50%, transparent 100%)',
+          filter: 'blur(28px)',
+          animation: 'mistDrift 18s ease-in-out -8s infinite reverse',
+        }}
+      />
+      {/* sub-mist drifting fog tendrils for organic motion */}
+      <div
+        className="absolute inset-x-0 pointer-events-none"
+        aria-hidden
+        style={{
+          top: '63%', height: '8%',
+          background: 'linear-gradient(180deg, transparent 0%, rgba(160,210,230,0.12) 50%, transparent 100%)',
+          filter: 'blur(24px)',
+          animation: 'mistDrift 14s ease-in-out -4s infinite',
         }}
       />
 
       {/* ═══════════════════════════════════════════════════════ */}
-      {/* LAYER 7 — Multi-layer animated waves                    */}
+      {/* LAYER 7 - Wave layers (tucked further down so the       */}
+      {/* horizon mist hides their tops; no hard sea/sky line).   */}
       {/* ═══════════════════════════════════════════════════════ */}
       <div
         aria-hidden
         className="absolute inset-x-0 pointer-events-none"
-        style={{ top: '64%', height: '36%' }}
+        style={{ top: '68%', height: '32%' }}
       >
-        {/* far wave layer */}
+        {/* far wave (deeply blurred, very low contrast) */}
         <svg
           viewBox="0 0 1440 140" preserveAspectRatio="none"
           width="100%" height="80"
           style={{
             position: 'absolute', top: 0, left: 0,
-            animation: 'waveDrift 18s ease-in-out infinite',
-            opacity: 0.55,
+            animation: 'waveDrift 20s ease-in-out infinite',
+            opacity: 0.4,
+            filter: 'blur(2px)',
           }}
         >
           <path
@@ -292,27 +259,24 @@ export default function IntroSplash({ onEnter }: Props) {
             fill="#0a3050"
           />
         </svg>
-        {/* mid-far wave */}
         <svg
           viewBox="0 0 1440 140" preserveAspectRatio="none"
           width="100%" height="100"
           style={{
             position: 'absolute', top: 14, left: 0,
-            animation: 'waveDrift 13s ease-in-out -4s infinite reverse',
-            opacity: 0.85,
+            animation: 'waveDrift 14s ease-in-out -4s infinite reverse',
+            opacity: 0.78,
           }}
         >
           <path
             d="M0,70 C200,32 400,108 600,70 C800,32 1000,108 1200,70 C1340,46 1410,90 1440,70 L1440,140 L0,140 Z"
             fill="#0a2848"
           />
-          {/* foam highlight on this layer */}
           <path
             d="M0,70 C200,32 400,108 600,70 C800,32 1000,108 1200,70 C1340,46 1410,90 1440,70"
             stroke="#7df9ff" strokeOpacity="0.18" strokeWidth="0.8" fill="none"
           />
         </svg>
-        {/* mid-near wave */}
         <svg
           viewBox="0 0 1440 140" preserveAspectRatio="none"
           width="100%" height="120"
@@ -327,10 +291,9 @@ export default function IntroSplash({ onEnter }: Props) {
           />
           <path
             d="M0,60 C200,108 400,18 600,60 C800,102 1000,16 1200,60 C1340,86 1410,42 1440,60"
-            stroke="#7df9ff" strokeOpacity="0.34" strokeWidth="1.1" fill="none"
+            stroke="#7df9ff" strokeOpacity="0.32" strokeWidth="1.1" fill="none"
           />
         </svg>
-        {/* foreground wave with strong foam crests */}
         <svg
           viewBox="0 0 1440 140" preserveAspectRatio="none"
           width="100%" height="140"
@@ -347,7 +310,6 @@ export default function IntroSplash({ onEnter }: Props) {
             d="M0,40 C160,90 320,4 520,46 C720,88 880,2 1080,46 C1260,84 1380,18 1440,40"
             stroke="#7df9ff" strokeOpacity="0.55" strokeWidth="1.4" fill="none"
           />
-          {/* crest sparkles */}
           {[80, 240, 410, 590, 770, 950, 1140, 1320].map((x, i) => (
             <circle key={i} cx={x} cy={i % 2 ? 18 : 70} r="1.4"
               fill="#fff" opacity="0.7"
@@ -358,7 +320,7 @@ export default function IntroSplash({ onEnter }: Props) {
       </div>
 
       {/* ═══════════════════════════════════════════════════════ */}
-      {/* LAYER 8 — Bioluminescent spores drifting upward         */}
+      {/* LAYER 8 - Bioluminescent spores                          */}
       {/* ═══════════════════════════════════════════════════════ */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden>
         {Array.from({ length: 18 }).map((_, i) => {
@@ -389,28 +351,48 @@ export default function IntroSplash({ onEnter }: Props) {
       </div>
 
       {/* ═══════════════════════════════════════════════════════ */}
-      {/* CONTENT — Caravel + copy + helm                          */}
+      {/* CONTENT - Eyebrow + Submarine + copy + helm              */}
       {/* ═══════════════════════════════════════════════════════ */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen
                       px-6 py-12 text-center">
 
-        {/* Eyebrow */}
+        {/* ── Eyebrow (no emoji, larger text + lines) ── */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.1 }}
-          className="font-display text-[10px] md:text-xs tracking-[0.45em] uppercase
-                     text-glow-cyan/85 mb-6 flex items-center gap-3"
+          className="font-display text-sm md:text-base tracking-[0.55em] uppercase
+                     text-glow-cyan mb-8 flex items-center gap-5"
+          style={{ textShadow: '0 0 14px rgba(0,212,255,0.55)' }}
         >
-          <span className="w-8 h-px bg-gradient-to-r from-transparent to-glow-cyan/70" />
-          ⚓  Surface · Departure
-          <span className="w-8 h-px bg-gradient-to-l from-transparent to-glow-cyan/70" />
+          {/* left line - bigger and more visible than before */}
+          <span
+            aria-hidden
+            className="block"
+            style={{
+              width: '88px',
+              height: '2px',
+              background: 'linear-gradient(to right, transparent, rgba(125,249,255,0.95))',
+              boxShadow: '0 0 8px rgba(0,212,255,0.6)',
+            }}
+          />
+          <span>Surface · Departure</span>
+          <span
+            aria-hidden
+            className="block"
+            style={{
+              width: '88px',
+              height: '2px',
+              background: 'linear-gradient(to left, transparent, rgba(125,249,255,0.95))',
+              boxShadow: '0 0 8px rgba(0,212,255,0.6)',
+            }}
+          />
         </motion.div>
 
-        {/* Caravel */}
-        <Caravel />
+        {/* ── Submarine ── */}
+        <Submarine />
 
-        {/* Welcome copy */}
+        {/* ── Welcome copy (no em-dashes anywhere) ── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -429,16 +411,15 @@ export default function IntroSplash({ onEnter }: Props) {
 
           <p className="mt-5 md:mt-6 text-sm md:text-base text-white/85 leading-relaxed max-w-xl mx-auto">
             This page is served by a <span className="text-glow-ice">5-node Kubernetes cluster</span>
-            {' '}running in my homelab — provisioned with kubeadm on Proxmox, managed via
-            {' '}<span className="text-glow-ice">GitOps with ArgoCD</span>, deployed from a
-            {' '}<span className="text-glow-ice">self-hosted Harbor registry</span>, monitored
-            {' '}with <span className="text-glow-ice">Prometheus + Grafana</span>, and served
-            {' '}through a <span className="text-glow-ice">Cloudflare Tunnel</span> with zero
-            open inbound ports.
+            {' '}running in my homelab, provisioned with kubeadm on Proxmox. The cluster is
+            managed via <span className="text-glow-ice">GitOps with ArgoCD</span>, deployed
+            from a <span className="text-glow-ice">self-hosted Harbor registry</span>, monitored
+            with <span className="text-glow-ice">Prometheus + Grafana</span>, and served through
+            a <span className="text-glow-ice">Cloudflare Tunnel</span> with zero open inbound ports.
           </p>
         </motion.div>
 
-        {/* Helm CTA */}
+        {/* ── Helm CTA ── */}
         <div className="mt-10 md:mt-12">
           <HelmButton onClick={onEnter} label="Take the Helm" />
         </div>
@@ -454,5 +435,142 @@ export default function IntroSplash({ onEnter }: Props) {
         </motion.p>
       </div>
     </motion.div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RealisticMoon - textured sphere with maria, terminator shadow,
+   subtle craters. No oversized halo, just a clean light source.
+   ═══════════════════════════════════════════════════════════════ */
+function RealisticMoon() {
+  return (
+    <svg
+      width="120"
+      height="120"
+      viewBox="0 0 120 120"
+      style={{
+        position: 'absolute',
+        transform: 'translate(-50%, -50%)',
+        display: 'block',
+      }}
+      aria-hidden
+    >
+      <defs>
+        {/* Base lunar surface - bluish-grey with subtle warmth */}
+        <radialGradient id="moon-base" cx="0.42" cy="0.38" r="0.62">
+          <stop offset="0%"   stopColor="#f4f8fc" />
+          <stop offset="55%"  stopColor="#cdd6dc" />
+          <stop offset="100%" stopColor="#7d8b94" />
+        </radialGradient>
+        {/* Terminator (shadow on the dark side) */}
+        <radialGradient id="moon-terminator" cx="0.95" cy="0.55" r="0.85">
+          <stop offset="35%" stopColor="#000" stopOpacity="0" />
+          <stop offset="80%" stopColor="#020a14" stopOpacity="0.55" />
+          <stop offset="100%" stopColor="#020a14" stopOpacity="0.85" />
+        </radialGradient>
+        {/* Soft inner sheen */}
+        <radialGradient id="moon-sheen" cx="0.32" cy="0.28" r="0.4">
+          <stop offset="0%"   stopColor="#fff" stopOpacity="0.45" />
+          <stop offset="100%" stopColor="#fff" stopOpacity="0" />
+        </radialGradient>
+        {/* Clip to a circle so maria don't bleed past the moon */}
+        <clipPath id="moon-clip">
+          <circle cx="60" cy="60" r="42" />
+        </clipPath>
+      </defs>
+
+      {/* Body */}
+      <circle cx="60" cy="60" r="42" fill="url(#moon-base)" />
+
+      {/* Maria (dark patches - recognizable lunar pattern) */}
+      <g clipPath="url(#moon-clip)" opacity="0.55">
+        {/* Mare Imbrium-ish (upper left) */}
+        <ellipse cx="46" cy="44" rx="14" ry="10" fill="#5a6770" />
+        {/* Mare Serenitatis (upper center-right) */}
+        <ellipse cx="68" cy="46" rx="9" ry="7" fill="#5a6770" opacity="0.85" />
+        {/* Mare Tranquillitatis (mid-right) */}
+        <ellipse cx="74" cy="58" rx="8" ry="6" fill="#5a6770" opacity="0.9" />
+        {/* Mare Nubium (lower-mid) */}
+        <ellipse cx="56" cy="72" rx="11" ry="6" fill="#5a6770" opacity="0.8" />
+        {/* Mare Humorum (lower-left) */}
+        <ellipse cx="44" cy="74" rx="6" ry="5" fill="#5a6770" opacity="0.75" />
+        {/* small Mare Crisium (right edge) */}
+        <ellipse cx="80" cy="52" rx="4" ry="3.5" fill="#5a6770" opacity="0.85" />
+      </g>
+
+      {/* Subtle crater dots */}
+      <g clipPath="url(#moon-clip)" opacity="0.5">
+        {[
+          [54, 38, 1.4], [62, 56, 1], [72, 68, 0.9], [44, 60, 1.1],
+          [50, 52, 0.7], [66, 36, 0.8], [78, 60, 0.9], [40, 48, 0.7],
+          [58, 64, 0.6], [70, 50, 0.7], [52, 80, 1.0], [46, 68, 0.8],
+        ].map(([x, y, r], i) => (
+          <g key={i}>
+            <circle cx={x} cy={y} r={r} fill="#3d474e" />
+            <circle cx={(x as number) - 0.4} cy={(y as number) - 0.4} r={(r as number) * 0.45}
+              fill="#fff" opacity="0.3" />
+          </g>
+        ))}
+      </g>
+
+      {/* Sheen highlight on upper-left */}
+      <circle cx="60" cy="60" r="42" fill="url(#moon-sheen)" />
+
+      {/* Terminator shadow on the dark side (right) */}
+      <circle cx="60" cy="60" r="42" fill="url(#moon-terminator)" />
+
+      {/* Crisp outer rim */}
+      <circle cx="60" cy="60" r="42" fill="none"
+        stroke="rgba(220,235,250,0.35)" strokeWidth="0.6" />
+    </svg>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SvgGodRays - three soft wedges emanating from below the moon.
+   Replaces the previous repeating-linear-gradient that produced
+   visible bands on the right half of the screen. Heavily blurred
+   and screen-blended for a clean volumetric-light feel.
+   ═══════════════════════════════════════════════════════════════ */
+function SvgGodRays() {
+  return (
+    <svg
+      className="absolute pointer-events-none mix-blend-screen"
+      style={{
+        right: '0',
+        top: '8%',
+        width: '60%',
+        height: '70%',
+        opacity: 0.6,
+        filter: 'blur(18px)',
+      }}
+      viewBox="0 0 600 600"
+      preserveAspectRatio="none"
+      aria-hidden
+    >
+      <defs>
+        <linearGradient id="rayA" x1="0.5" y1="0" x2="0.5" y2="1">
+          <stop offset="0%"   stopColor="#7df9ff" stopOpacity="0.0" />
+          <stop offset="20%"  stopColor="#7df9ff" stopOpacity="0.25" />
+          <stop offset="100%" stopColor="#00d4ff" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient id="rayB" x1="0.5" y1="0" x2="0.5" y2="1">
+          <stop offset="0%"   stopColor="#7df9ff" stopOpacity="0.0" />
+          <stop offset="25%"  stopColor="#7df9ff" stopOpacity="0.18" />
+          <stop offset="100%" stopColor="#00d4ff" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient id="rayC" x1="0.5" y1="0" x2="0.5" y2="1">
+          <stop offset="0%"   stopColor="#7df9ff" stopOpacity="0.0" />
+          <stop offset="22%"  stopColor="#7df9ff" stopOpacity="0.14" />
+          <stop offset="100%" stopColor="#00d4ff" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      {/* widest, leftmost wedge */}
+      <path d="M 380,40 L 100,600 L 320,600 Z" fill="url(#rayA)" />
+      {/* middle wedge */}
+      <path d="M 400,50 L 240,600 L 460,600 Z" fill="url(#rayB)" />
+      {/* narrowest, rightmost wedge */}
+      <path d="M 420,60 L 420,600 L 580,600 Z" fill="url(#rayC)" />
+    </svg>
   );
 }

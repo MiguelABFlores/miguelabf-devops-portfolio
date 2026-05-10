@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 
 /* ───────────────────────────────────────────────────────────────
-   HelmButton — Atlantean rune disk CTA.
+   HelmButton - Atlantean rune disk CTA.
 
    Design language matches the portfolio palette: cyan/magenta
    bioluminescent glow, concentric rotating rings, glowing
@@ -12,8 +12,8 @@ import { motion } from 'framer-motion';
    Glitch fix: the wheel rotation is a CONSTANT-duration CSS
    animation (not duration-changing Framer transition), so the
    timeline never gets re-evaluated mid-flight. Hover effects
-   apply to the circular wheel only — never to the rectangular
-   button bounding box — so no square outline can flash.
+   apply to the circular wheel only - never to the rectangular
+   button bounding box - so no square outline can flash.
    ─────────────────────────────────────────────────────────────── */
 type Props = {
   onClick: () => void;
@@ -28,12 +28,12 @@ export default function HelmButton({ onClick, label = 'Take the Helm' }: Props) 
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, delay: 1.4, ease: 'easeOut' }}
-      aria-label={`${label} — enter the portfolio`}
+      aria-label={`${label} - enter the portfolio`}
       className="group inline-flex flex-col items-center gap-3 cursor-pointer
                  bg-transparent border-0 p-0 select-none
                  focus-visible:outline-none"
     >
-      {/* ── Wheel disk — circular hover surface ─────────────────
+      {/* ── Wheel disk - circular hover surface ─────────────────
           Scale + filter live HERE (not on the button) so the
           hover effect is bound to a perfect circle. The disk is
           intrinsically square (130×130) but `rounded-full` makes
@@ -50,13 +50,13 @@ export default function HelmButton({ onClick, label = 'Take the Helm' }: Props) 
                    group-focus-visible:ring-offset-abyss-900
                    group-hover:[--helm-glow:0.85]"
         style={{
-          // Static glow filter — never changes mid-render,
+          // Static glow filter - never changes mid-render,
           // intensified via group-hover variable on the inner SVG.
           filter:
             'drop-shadow(0 0 22px rgba(0,212,255,0.55)) drop-shadow(0 0 8px rgba(125,249,255,0.35))',
         }}
       >
-        {/* Continuous rotation — pure CSS animation so framer
+        {/* Continuous rotation - pure CSS animation so framer
             never has to retime the spin. */}
         <div
           className="absolute inset-0"
@@ -82,7 +82,7 @@ export default function HelmButton({ onClick, label = 'Take the Helm' }: Props) 
           <InnerRunes />
         </div>
 
-        {/* Pulsing portal core — does NOT rotate so the central
+        {/* Pulsing portal core - does NOT rotate so the central
             light feels stable like a beacon. */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div
@@ -111,7 +111,7 @@ export default function HelmButton({ onClick, label = 'Take the Helm' }: Props) 
   );
 }
 
-/* ── Outer rotating wheel — geometric rune segments + tick marks ── */
+/* ── Outer rotating wheel - geometric rune segments + tick marks ── */
 function RuneWheel() {
   const rOuter = 60;
   const rRim   = 54;
@@ -143,7 +143,7 @@ function RuneWheel() {
       <circle cx="65" cy="65" r={rRim} stroke="#7df9ff" strokeOpacity="0.25" strokeWidth="0.7" fill="none" />
 
       {/* 8 rune-tip handles around the outside (the protruding peg
-          equivalents — but now triangular Atlantean shapes) */}
+          equivalents - but now triangular Atlantean shapes) */}
       {Array.from({ length: 8 }).map((_, i) => {
         const a  = (i * Math.PI * 2) / 8;
         const x1 = 65 + Math.cos(a) * (rOuter - 1);
@@ -162,7 +162,7 @@ function RuneWheel() {
         );
       })}
 
-      {/* 8 spokes — drawn as dual lines for a hollow-rune feel */}
+      {/* 8 spokes - drawn as dual lines for a hollow-rune feel */}
       {Array.from({ length: 8 }).map((_, i) => {
         const a = (i * Math.PI * 2) / 8;
         const x = 65 + Math.cos(a) * rInner;
@@ -196,7 +196,7 @@ function RuneWheel() {
   );
 }
 
-/* ── Inner counter-rotating rune ring — geometric Atlantean glyphs ── */
+/* ── Inner counter-rotating rune ring - geometric Atlantean glyphs ── */
 function InnerRunes() {
   return (
     <svg

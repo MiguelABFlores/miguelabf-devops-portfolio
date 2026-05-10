@@ -21,7 +21,7 @@ export const certifications: Certification[] = [
     inProgress: true,
   },
   {
-    title: 'IELTS — C1 (Advanced)',
+    title: 'IELTS C1 (Advanced)',
     issuer: 'British Council / IDP',
     badge: 'EN',
   },

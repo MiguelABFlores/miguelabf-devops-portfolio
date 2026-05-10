@@ -24,7 +24,7 @@ const TOTAL = links.length + 2;
 function arcFrom(i: number) {
   const t    = i / (TOTAL - 1);     // 0 → 1
   const fromX = -(720 - t * 220);   // −720 (Home/logo) → −500 (CV)
-  const fromY = -310;               // above center — top bar zone
+  const fromY = -310;               // above center - top bar zone
   const midX  = fromX * 0.10;      // 90 % of x-travel done at mid-point
   const midY  = fromY * 0.30;      // still 30 % above at mid-point
   return { fromX, fromY, midX, midY };
@@ -150,7 +150,7 @@ function SideNav({ active }: { active: string }) {
                    bg-gradient-to-b from-transparent via-glow-cyan/25 to-transparent pointer-events-none"
       />
 
-      {/* ── Home bubble (arcIndex 0) — goes to top of page ── */}
+      {/* ── Home bubble (arcIndex 0) - goes to top of page ── */}
       <Bubble
         href="home"
         label="Home"

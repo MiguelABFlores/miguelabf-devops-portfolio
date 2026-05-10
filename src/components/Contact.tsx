@@ -48,7 +48,7 @@ export default function Contact() {
         className="max-w-2xl text-white/80 mb-10"
       >
         Looking for a DevOps Engineer who can build pipelines, tame Kubernetes clusters, and
-        automate the boring parts? Drop a message — I&apos;ll surface from the deep.
+        automate the boring parts? Drop a message. I&apos;ll surface from the deep.
       </motion.p>
 
       <div className="grid sm:grid-cols-2 gap-4">

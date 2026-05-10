@@ -35,14 +35,14 @@ export default function About() {
           <p className="text-white/88 text-base md:text-lg leading-relaxed">
             DevOps Engineer with hands-on experience building and operating Kubernetes
             platforms, GitOps pipelines, and self-hosted infrastructure. Background in
-            Site Reliability Engineering at Oracle — I specialize in turning fragile
+            Site Reliability Engineering at Oracle. I specialize in turning fragile
             systems into <span className="text-glow-ice font-medium">self-healing, observable,
             and declaratively managed</span> ones.
           </p>
           <p className="text-white/80 text-base md:text-lg leading-relaxed">
-            Strong bias for automation and declarative infrastructure — if I&apos;m doing
+            Strong bias for automation and declarative infrastructure: if I&apos;m doing
             something twice, I&apos;m building a pipeline for it. Former Site Reliability
-            Developer at Oracle (Jan 2024 – Mar 2026), where I led observability initiatives
+            Developer at Oracle (Jan 2024 to Mar 2026), where I led observability initiatives
             and built internal CI/CD pipelines. Currently building a production-grade
             homelab platform to sharpen DevOps skills and demonstrate them publicly.
           </p>
@@ -54,7 +54,7 @@ export default function About() {
             {[
               { label: 'Based in',  value: 'Guadalajara, MX',    accent: 'cyan' },
               { label: 'Languages', value: 'English C1 · Spanish', accent: 'magenta' },
-              { label: 'Education', value: 'ITESM — Mechatronics', accent: 'cyan' },
+              { label: 'Education', value: 'ITESM, Mechatronics', accent: 'cyan' },
             ].map(({ label, value, accent }) => (
               <div key={label}
                 className="glass rounded-xl px-4 py-3 border-l-2"

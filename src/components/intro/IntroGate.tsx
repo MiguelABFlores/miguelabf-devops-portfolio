@@ -7,12 +7,12 @@ import IntroSplash from './IntroSplash';
 const STORAGE_KEY = 'mabf:intro-seen';
 
 /* ───────────────────────────────────────────────────────────────
-   IntroGate — owns splash visibility.
+   IntroGate - owns splash visibility.
 
    First-paint strategy:
    - SSR / static export: initial state is `true`, so the splash
      IS in the static HTML. First-time visitors see it from frame 1
-     — no flash of portfolio.
+     - no flash of portfolio.
    - Repeat visitors within a session: an inline script in <head>
      (see app/layout.tsx) reads sessionStorage synchronously BEFORE
      paint and adds `mabf-intro-seen` to <html>. globals.css then
@@ -27,13 +27,13 @@ export default function IntroGate() {
   const [diving, setDiving]       = useState(false);
 
   useEffect(() => {
-    // Repeat visit detection — the CSS already hid the splash via the
+    // Repeat visit detection - the CSS already hid the splash via the
     // <html> class set by the inline script. This unmounts it cleanly.
     try {
       const seen = sessionStorage.getItem(STORAGE_KEY) === 'true';
       if (seen) setShowIntro(false);
     } catch {
-      /* private browsing — keep splash visible */
+      /* private browsing - keep splash visible */
     }
   }, []);
 
@@ -66,7 +66,7 @@ export default function IntroGate() {
   );
 }
 
-/* ── DiveBubbles — vertical streak of bubbles rushing UP across
+/* ── DiveBubbles - vertical streak of bubbles rushing UP across
    the screen while the splash dives DOWN. ── */
 function DiveBubbles() {
   const bubbles = Array.from({ length: 14 }).map((_, i) => ({

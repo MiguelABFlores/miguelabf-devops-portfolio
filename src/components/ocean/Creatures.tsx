@@ -1,7 +1,7 @@
 'use client';
 
 /* ─────────────────────────────────────────────────────────────────
-   Ocean Creatures — realistic deep-sea cast
+   Ocean Creatures - realistic deep-sea cast
    Animations defined in globals.css:
      swimRight, swimLeft, whaleBob, drift, jellyfish, squidDrift, lurePulse
    All sizes/delays are inline so Tailwind JIT won't purge them.
@@ -261,7 +261,7 @@ function Anglerfish({
   top, left,
 }: { top: string; left: string }) {
   const C  = '#b14eff';
-  const LC = '#b8ff80'; /* bioluminescent lure color — yellow-green */
+  const LC = '#b8ff80'; /* bioluminescent lure color - yellow-green */
   return (
     <div aria-hidden style={{
       position: 'absolute', top, left,
@@ -338,7 +338,7 @@ function Anglerfish({
           fill="none" stroke={C} strokeOpacity="0.40" strokeWidth="1"
         />
 
-        {/* ── Lower jaw (extends further forward — hinged open) ── */}
+        {/* ── Lower jaw (extends further forward - hinged open) ── */}
         <path d={`
           M 62,140
           C 84,148 120,152 156,146
@@ -595,7 +595,7 @@ export default function Creatures() {
       {/* ── Manta Ray ── */}
       <MantaRay top="28%" delay="-15s" duration="68s" flip />
 
-      {/* ── Anglerfish — lurks in the deep, near bottom ── */}
+      {/* ── Anglerfish - lurks in the deep, near bottom ── */}
       <Anglerfish top="66%" left="22%" />
 
       {/* ── Jellyfish (scattered at varied depths) ── */}
