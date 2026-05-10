@@ -39,9 +39,12 @@ export default function IntroSplash({ onEnter }: Props) {
       animate={{ opacity: 1 }}
       exit={{
         y: '-110vh',
-        scale: 1.4,
+        scale: 1.35,
         opacity: 0,
-        transition: { duration: 1.6, ease: [0.5, 0, 0.75, 0] },
+        // Faster dive: 0.9s instead of 1.6s, with a steeper ease-in so
+        // the user feels the "drop" but doesn't wait. Ramp is still
+        // slow-start / fast-finish to sell acceleration.
+        transition: { duration: 0.9, ease: [0.55, 0, 0.75, 0] },
       }}
       /* IMPORTANT: overflow-hidden on the motion.div - the decorative
          layers (stars, moon, waves, etc.) stay locked to the viewport
@@ -436,7 +439,7 @@ export default function IntroSplash({ onEnter }: Props) {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1 }}
+          transition={{ duration: 0.35, delay: 0 }}
           className="font-display text-sm md:text-base tracking-[0.55em] uppercase
                      text-glow-cyan mb-4 md:mb-6 flex items-center gap-3 md:gap-5"
           style={{ textShadow: '0 0 14px rgba(0,212,255,0.55)' }}
@@ -476,7 +479,7 @@ export default function IntroSplash({ onEnter }: Props) {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.9, ease: 'easeOut' }}
+          transition={{ duration: 0.4, delay: 0.25, ease: 'easeOut' }}
           className="max-w-2xl mt-4 md:mt-2"
         >
           <h1 className="font-display text-xl md:text-3xl xl:text-4xl text-white glow-text-soft leading-tight">
@@ -505,7 +508,7 @@ export default function IntroSplash({ onEnter }: Props) {
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.1, ease: 'easeOut' }}
+          transition={{ duration: 0.4, delay: 0.45, ease: 'easeOut' }}
         >
           <ToolLogos />
         </motion.div>
@@ -518,7 +521,7 @@ export default function IntroSplash({ onEnter }: Props) {
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.55 }}
-          transition={{ duration: 0.8, delay: 2.2 }}
+          transition={{ duration: 0.4, delay: 1.0 }}
           className="mt-4 text-[10px] md:text-xs tracking-[0.3em] uppercase
                      font-display text-white/55"
         >

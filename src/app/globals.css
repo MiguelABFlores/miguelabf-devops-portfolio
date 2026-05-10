@@ -205,6 +205,22 @@ body {
   to   { transform: rotate(360deg); }
 }
 
+/* Tap-pulse: an expanding ring that emanates from the helm wheel
+   as a clear "this is a touch target" cue for non-techy / mobile
+   visitors. Two staggered copies make it feel continuous. */
+@keyframes tapPulse {
+  0%   { transform: scale(1);   opacity: 0.7; }
+  60%  { opacity: 0.18; }
+  100% { transform: scale(1.7); opacity: 0;   }
+}
+
+/* Bouncing chevron under the helm label as a literal "click here"
+   affordance. Small vertical hop on a slow loop. */
+@keyframes helmHintBounce {
+  0%, 100% { transform: translateY(0);    opacity: 0.85; }
+  50%       { transform: translateY(6px);  opacity: 1;    }
+}
+
 /* === Splash sky / abyss life animations === */
 
 /* Bird wing flap */
