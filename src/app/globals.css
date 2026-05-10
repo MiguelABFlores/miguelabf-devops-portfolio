@@ -166,6 +166,142 @@ body {
   50%       { opacity: 1.00; transform: scale(1.28); filter: blur(0px); }
 }
 
+/* Intro splash — animated wave layers at the surface waterline */
+@keyframes waveDrift {
+  0%, 100% { transform: translateX(0)     translateY(0); }
+  50%       { transform: translateX(-30px) translateY(4px); }
+}
+
+/* Aurora swirls in the upper sky of the splash */
+@keyframes auroraDrift {
+  0%, 100% { transform: translateX(0)    translateY(0)  scaleX(1)    scaleY(1); opacity: 0.55; }
+  50%       { transform: translateX(60px) translateY(-12px) scaleX(1.1) scaleY(0.95); opacity: 0.85; }
+}
+
+/* Distant misty fog drifting across the horizon */
+@keyframes mistDrift {
+  0%, 100% { transform: translateX(-3%); opacity: 0.55; }
+  50%       { transform: translateX(3%);  opacity: 0.75; }
+}
+
+/* Floating bioluminescent particles drifting upward in the splash */
+@keyframes splashSpore {
+  0%   { transform: translate3d(0, 0, 0)       scale(0.6); opacity: 0;   }
+  10%  { opacity: 0.85; }
+  90%  { opacity: 0.85; }
+  100% { transform: translate3d(20px, -120vh, 0) scale(1.1); opacity: 0;   }
+}
+
+/* Subtle glow pulse for atlantean rune segments */
+@keyframes runePulse {
+  0%, 100% { opacity: 0.45; filter: blur(0.5px); }
+  50%       { opacity: 0.95; filter: blur(0px);  }
+}
+
+/* Continuous wheel rotation — pure CSS so framer never has to
+   retime the spin (avoids hover-induced glitch). */
+@keyframes wheelSpin {
+  from { transform: rotate(0deg);   }
+  to   { transform: rotate(360deg); }
+}
+
+/* === Splash sky / abyss life animations === */
+
+/* Bird wing flap */
+@keyframes birdFlap {
+  0%, 100% { transform: scaleY(1);    }
+  50%       { transform: scaleY(0.45); }
+}
+
+/* Bird flock drift - off-screen-right to off-screen-left */
+@keyframes flockDrift {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-140vw); }
+}
+
+/* Shooting star - quick streak across the upper sky.
+   The wrapper translates + fades, the inner div carries a static
+   rotate() so the angle never fights with the keyframe. */
+@keyframes shootStar {
+  0%, 4%   { transform: translate(0, 0);       opacity: 0; }
+  8%       { opacity: 1; }
+  35%      { transform: translate(40vw, 28vh); opacity: 1; }
+  45%      { opacity: 0; }
+  100%     { transform: translate(60vw, 42vh); opacity: 0; }
+}
+
+/* Shooting star - down-LEFT variant */
+@keyframes shootStarLeft {
+  0%, 4%   { transform: translate(0, 0);          opacity: 0; }
+  8%       { opacity: 1; }
+  35%      { transform: translate(-40vw, 28vh);   opacity: 1; }
+  45%      { opacity: 0; }
+  100%     { transform: translate(-60vw, 42vh);   opacity: 0; }
+}
+
+/* Shooting star - mostly horizontal variant */
+@keyframes shootStarFlat {
+  0%, 4%   { transform: translate(0, 0);        opacity: 0; }
+  8%       { opacity: 1; }
+  35%      { transform: translate(50vw, 8vh);   opacity: 1; }
+  45%      { opacity: 0; }
+  100%     { transform: translate(70vw, 12vh);  opacity: 0; }
+}
+
+/* Shooting star - steep down variant */
+@keyframes shootStarSteep {
+  0%, 4%   { transform: translate(0, 0);       opacity: 0; }
+  8%       { opacity: 1; }
+  35%      { transform: translate(20vw, 38vh); opacity: 1; }
+  45%      { opacity: 0; }
+  100%     { transform: translate(30vw, 55vh); opacity: 0; }
+}
+
+/* Fish gentle body flap */
+@keyframes fishFlap {
+  0%, 100% { transform: scaleX(1)    skewX(0deg);   }
+  50%       { transform: scaleX(0.96) skewX(-3deg); }
+}
+
+/* Fish school drifting left-to-right */
+@keyframes schoolLTR {
+  0%   { transform: translateX(-220px); }
+  100% { transform: translateX(105vw);  }
+}
+
+/* Fish school drifting right-to-left */
+@keyframes schoolRTL {
+  0%   { transform: translateX(105vw);  }
+  100% { transform: translateX(-220px); }
+}
+
+/* Distant whale - long slow swim with fade in/out so it never
+   pops in or out hard at the edges. */
+@keyframes whaleDrift {
+  0%   { transform: translateX(-360px); opacity: 0; }
+  10%  { opacity: 0.32; }
+  90%  { opacity: 0.32; }
+  100% { transform: translateX(108vw);  opacity: 0; }
+}
+
+/* Splash hide-on-repeat-visit (set by inline script in <head>) */
+html.mabf-intro-seen [data-intro-splash] {
+  display: none !important;
+}
+
+/* Hide scrollbar on the splash overlay (Firefox + WebKit).
+   The overlay needs overflow-y:auto so the helm button is reachable
+   on short viewports, but a visible scrollbar would distract from
+   the scene. Scrolling itself stays functional (mouse wheel, touch,
+   keyboard). */
+.splash-scroll {
+  scrollbar-width: none;       /* Firefox */
+  -ms-overflow-style: none;    /* legacy Edge / IE */
+}
+.splash-scroll::-webkit-scrollbar {
+  display: none;               /* Chrome, Safari */
+}
+
 /* Scroll thumb */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: #050a1a; }

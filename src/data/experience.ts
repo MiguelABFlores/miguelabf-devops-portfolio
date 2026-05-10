@@ -23,12 +23,12 @@ export const experience: Job[] = [
     company: 'Oracle',
     companySlug: 'oracle',
     role: 'Site Reliability Developer II',
-    period: 'Jan 2024 — Mar 2026',
+    period: 'Jan 2024 - Mar 2026',
     location: 'Guadalajara, MX',
     summary:
-      'Supported the team with maintenance of servers running internal applications, improving stability, reliability, and security. Proposed and introduced new tools to strengthen the infrastructure. Contributed to application development with Perl, and led the introduction of observability tooling for the team.\n\nDeployed containerized Prometheus and Grafana to monitor the machines the team was hosting for the internal applications — the first monitoring solution the team had, providing full observability across the fleet.',
+      'Supported the team with maintenance of servers running internal applications, improving stability, reliability, and security. Proposed and introduced new tools to strengthen the infrastructure. Contributed to application development with Perl, and led the introduction of observability tooling for the team.\n\nDeployed containerized Prometheus and Grafana to monitor the machines the team was hosting for the internal applications. This was the first monitoring solution the team had, providing full observability across the fleet.',
     highlights: [
-      'Deployed Prometheus + Grafana stack in containers to provide full observability across the team\'s server fleet — first monitoring solution the team had',
+      'Deployed Prometheus + Grafana stack in containers to provide full observability across the team\'s server fleet (first monitoring solution the team had)',
       'Built CI/CD pipelines in GitLab for internal services, reducing manual deployment steps across multiple applications',
       'Developed Ansible playbooks for team server inventory and configuration management',
       'Wrote scripts to automate repetitive operational tasks, improving team efficiency',
@@ -43,12 +43,12 @@ export const experience: Job[] = [
     company: 'Servicios Veterinarios Eläin',
     companySlug: 'elain',
     role: 'Software Development Lead',
-    period: 'Oct 2023 — Feb 2024',
+    period: 'Oct 2023 - Feb 2024',
     location: 'Guadalajara, MX',
     summary:
       'Served as lead engineer responsible for project design, structuring, planning, and product delivery for a veterinary clinic business website. Worked alongside a frontend apprentice, teaching Agile methodologies, Git management, and maintaining a well-organized workflow with branches and tickets.\n\nManaged infrastructure on Google Cloud Platform (GCP), handled network management, developed pipelines for automating the development environment with GitHub Actions, and was involved in bug fixing, Docker containerization, direct client interaction, and the full deployment of the application.',
     highlights: [
-      'Project Management — full ownership of design, planning, and delivery',
+      'Project Management: full ownership of design, planning, and delivery',
       'Teaching and Mentoring a frontend apprentice on Agile + Git',
       'Collaboration and direct Client Interaction',
       'Bug Fixing and Docker containerization',
@@ -59,7 +59,7 @@ export const experience: Job[] = [
     company: 'Grid Dynamics',
     companySlug: 'griddynamics',
     role: 'Junior DevOps Engineer',
-    period: 'Dec 2022 — Jan 2024',
+    period: 'Dec 2022 - Jan 2024',
     location: 'Guadalajara, MX',
     summary:
       'Worked on three internal DevOps projects covering the full spectrum of CI/CD, Kubernetes cluster management, cloud migrations, monitoring, and multi-platform pipelines.',
@@ -71,13 +71,13 @@ export const experience: Job[] = [
     subProjects: [
       {
         name: 'DevOps Project 3',
-        period: 'Jun 2023 — Aug 2023',
+        period: 'Jun 2023 - Aug 2023',
         description:
           'Created the CI/CD pipeline for a React web application, provisioned GitLab Runners, built a JFrog artifact repository, and planned infrastructure for AWS. A key early lesson was developing communication skills to align with developers. Raised test environments in DigitalOcean before touching production-adjacent infrastructure.',
         responsibilities: [
           'Create GitLab Runners',
           'Develop the complete pipeline for the web application',
-          'Set up Kubernetes services — JFrog Repository, Jenkins Server',
+          'Set up Kubernetes services: JFrog Repository, Jenkins Server',
           'Raise tickets to request permissions and resources',
           'Participate in scrum meetings',
           'Create project documentation',
@@ -88,7 +88,7 @@ export const experience: Job[] = [
       },
       {
         name: 'DevOps Project 2',
-        period: 'Aug 2023 — Jan 2024',
+        period: 'Aug 2023 - Jan 2024',
         description:
           'Reused the infrastructure from Project 1 to create resources for a new Python service. Built a multi-stage Docker image, created the full CI/CD pipeline, set up a Kubernetes CronJob for scheduled execution, and pushed versioned images to the Nexus 3 repository in the local cluster.',
         responsibilities: [
@@ -102,8 +102,8 @@ export const experience: Job[] = [
         tech: ['GitLab CI/CD', 'Kubernetes', 'Helm', 'CronJob', 'Docker', 'Scripting', 'Networking', 'Git'],
       },
       {
-        name: 'DevOps Project 1 — Main',
-        period: 'Jun 2023 — Dec 2023',
+        name: 'DevOps Project 1: Main',
+        period: 'Jun 2023 - Dec 2023',
         description:
           'Largest and most complex project: configured a local k3s cluster, deployed Nexus 3, MongoDB Replica Set, SonarQube, Prometheus, and Grafana via Helm, and managed GitLab Runners. Migrated the full stack from GCP serverless to the local cluster. Built all CI/CD pipelines from scratch for frontend (React), backend (Python), Android (Kotlin), and iOS (xCode). Ran chaos experiments with LitmusChaos.',
         responsibilities: [
@@ -126,7 +126,7 @@ export const experience: Job[] = [
     company: 'Assetel',
     companySlug: 'assetel',
     role: 'Cloud Engineer Intern',
-    period: 'Jan 2018 — Nov 2018',
+    period: 'Jan 2018 - Nov 2018',
     location: 'Guadalajara, MX',
     summary:
       'Worked alongside a team of cloud engineers in the server department. Handled primarily Windows servers and managed a Linux server for the first time. Assisted the lead engineer with troubleshooting, remote monitoring, and data center visits. Supported office departments (accounting, finance, etc.) with computer equipment and the office network.\n\nMost notable task: automated several repetitive engineer duties, including writing a script to process logs and verify the status of specific servers.',

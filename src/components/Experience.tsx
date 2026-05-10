@@ -162,7 +162,7 @@ function JobCard({ job, index }: { job: Job; index: number }) {
             </div>
           </div>
 
-          {/* Summary — handle multi-paragraph */}
+          {/* Summary - handle multi-paragraph */}
           {job.summary.split('\n\n').map((para, i) => (
             <p key={i} className={`text-white/80 text-sm md:text-[0.95rem] leading-relaxed ${i > 0 ? 'mt-3' : ''}`}>
               {para}

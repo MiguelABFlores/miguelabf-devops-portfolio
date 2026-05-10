@@ -57,7 +57,7 @@ export default function Projects() {
                   {p.title}
                 </h3>
 
-                {/* Description — split on \n\n to render paragraphs */}
+                {/* Description - split on \n\n to render paragraphs */}
                 <div className="mt-2 space-y-2">
                   {p.description.split('\n\n').map((para, idx) => (
                     <p key={idx} className="text-white/75 text-sm leading-relaxed">{para}</p>
