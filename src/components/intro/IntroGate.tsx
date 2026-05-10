@@ -50,8 +50,10 @@ export default function IntroGate() {
     if (diving) return;
     setDiving(true);
     try { sessionStorage.setItem(STORAGE_KEY, 'true'); } catch { /* noop */ }
-    // 1.6s exit + buffer so the dive animation completes cleanly.
-    window.setTimeout(() => setShowIntro(false), 1700);
+    // 0.9s exit + tiny buffer so the dive animation completes cleanly.
+    // Was 1700ms; halving it makes the click-to-portfolio time feel
+    // immediate rather than laggy.
+    window.setTimeout(() => setShowIntro(false), 950);
   }
 
   return (
@@ -73,8 +75,8 @@ function DiveBubbles() {
     id: i,
     x:        10 + ((i * 67) % 80),
     size:     6 + (i % 4) * 5,
-    delay:    i * 0.06,
-    duration: 1.0 + (i % 3) * 0.25,
+    delay:    i * 0.035,                 // tighter stagger
+    duration: 0.6 + (i % 3) * 0.18,      // faster rise to match 0.9s dive
   }));
 
   return (
