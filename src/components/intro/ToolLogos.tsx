@@ -3,32 +3,29 @@
 /* ────────────────────────────────────────────────────────────────
    ToolLogos - row of brand icons for the homelab stack.
 
-   Each icon:
-   - Real brand-color SVG served from the simple-icons CDN
-     (https://cdn.simpleicons.org/<slug>/<color>)
-   - Wrapped in a 48x48 dark-glass circle with a cyan border + glow
-     to fit the splash aesthetic
-   - Tiny label below for accessibility / unrecognized brands
+   Each icon is a SELF-HOSTED brand-color SVG served from
+   /public/icons/. This eliminates the 9 external CDN requests
+   (formerly cdn.simpleicons.org) that were the single biggest
+   contributor to the splash's initial-load delay. Local files are
+   served by the same Cloudflare-edge-cached nginx as the rest of
+   the site - effectively instant.
 
-   Layout: a wrapping flex row centered horizontally. On wide
-   screens all 9 icons fit on one line. On narrow screens they
-   wrap to 2-3 rows naturally.
+   Icons were pre-colorized at download time via the CDN's color
+   parameter, so no runtime tinting is needed. To add or update an
+   icon: re-download with the desired color.
+     curl https://cdn.simpleicons.org/<slug>/<hex> > public/icons/<slug>.svg
    ──────────────────────────────────────────────────────────────── */
 
 const tools = [
-  { slug: 'kubernetes', name: 'Kubernetes', color: '326CE5' },
-  { slug: 'argo',       name: 'Argo CD',    color: 'EF7B4D' },
-  { slug: 'docker',     name: 'Docker',     color: '2496ED' },
-  // Helm's primary brand color (0F1689) is dark navy and disappears on
-  // dark glass. Even its secondary teal (277A9F) is too dim. Using
-  // 5DBED9 - a brighter teal in the same family - so the wheel reads
-  // clearly while still looking on-brand.
-  { slug: 'helm',       name: 'Helm',       color: '5DBED9' },
-  { slug: 'github',     name: 'GitHub',     color: 'FFFFFF' },
-  { slug: 'prometheus', name: 'Prometheus', color: 'E6522C' },
-  { slug: 'grafana',    name: 'Grafana',    color: 'F46800' },
-  { slug: 'cloudflare', name: 'Cloudflare', color: 'F38020' },
-  { slug: 'linux',      name: 'Linux',      color: 'FCC624' },
+  { slug: 'kubernetes', name: 'Kubernetes' },
+  { slug: 'argo',       name: 'Argo CD' },
+  { slug: 'docker',     name: 'Docker' },
+  { slug: 'helm',       name: 'Helm' },
+  { slug: 'github',     name: 'GitHub' },
+  { slug: 'prometheus', name: 'Prometheus' },
+  { slug: 'grafana',    name: 'Grafana' },
+  { slug: 'cloudflare', name: 'Cloudflare' },
+  { slug: 'linux',      name: 'Linux' },
 ];
 
 export default function ToolLogos() {
@@ -79,12 +76,11 @@ export default function ToolLogos() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={`https://cdn.simpleicons.org/${tool.slug}/${tool.color}`}
+                src={`/icons/${tool.slug}.svg`}
                 alt={tool.name}
                 width={24}
                 height={24}
                 className="w-6 h-6 select-none pointer-events-none"
-                loading="lazy"
                 draggable={false}
               />
             </div>
