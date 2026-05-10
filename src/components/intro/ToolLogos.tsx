@@ -19,11 +19,11 @@ const tools = [
   { slug: 'kubernetes', name: 'Kubernetes', color: '326CE5' },
   { slug: 'argo',       name: 'Argo CD',    color: 'EF7B4D' },
   { slug: 'docker',     name: 'Docker',     color: '2496ED' },
-  // Helm's primary brand color is the very dark navy 0F1689, which is
-  // invisible on our dark-glass icon background. Switching to 277A9F,
-  // Helm's official secondary teal, keeps it on-brand while staying
-  // visible.
-  { slug: 'helm',       name: 'Helm',       color: '277A9F' },
+  // Helm's primary brand color (0F1689) is dark navy and disappears on
+  // dark glass. Even its secondary teal (277A9F) is too dim. Using
+  // 5DBED9 - a brighter teal in the same family - so the wheel reads
+  // clearly while still looking on-brand.
+  { slug: 'helm',       name: 'Helm',       color: '5DBED9' },
   { slug: 'github',     name: 'GitHub',     color: 'FFFFFF' },
   { slug: 'prometheus', name: 'Prometheus', color: 'E6522C' },
   { slug: 'grafana',    name: 'Grafana',    color: 'F46800' },
@@ -33,7 +33,7 @@ const tools = [
 
 export default function ToolLogos() {
   return (
-    <div className="mt-8 max-w-2xl mx-auto">
+    <div className="mt-5 md:mt-7 max-w-2xl mx-auto">
       {/* Eyebrow label */}
       <div
         className="font-display text-[10px] md:text-xs tracking-[0.45em] uppercase

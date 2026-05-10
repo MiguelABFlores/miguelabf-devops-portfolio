@@ -43,7 +43,12 @@ export default function IntroSplash({ onEnter }: Props) {
         opacity: 0,
         transition: { duration: 1.6, ease: [0.5, 0, 0.75, 0] },
       }}
-      className="fixed inset-0 z-[100] overflow-y-auto overflow-x-hidden splash-scroll"
+      /* IMPORTANT: overflow-hidden on the motion.div - the decorative
+         layers (stars, moon, waves, etc.) stay locked to the viewport
+         as a fixed backdrop. The scrollable container is a separate
+         <div> below, so when content overflows on short viewports the
+         user can scroll WITHOUT dragging the scenery up with them.   */
+      className="fixed inset-0 z-[100] overflow-hidden"
       aria-label="Welcome to the portfolio"
       role="dialog"
       style={{
@@ -412,26 +417,35 @@ export default function IntroSplash({ onEnter }: Props) {
       </div>
 
       {/* ═══════════════════════════════════════════════════════ */}
-      {/* CONTENT - Eyebrow + Submarine + copy + helm              */}
+      {/* FOREGROUND - the only part of the splash that scrolls.   */}
+      {/*                                                          */}
+      {/* This is a SEPARATE absolutely-positioned layer over the  */}
+      {/* backdrop. It has its own overflow-y-auto so when the     */}
+      {/* content overflows on a short viewport, the user can      */}
+      {/* scroll the CONTENT without dragging the moon, waves, or  */}
+      {/* stars along with it - they stay locked to the viewport.  */}
       {/* ═══════════════════════════════════════════════════════ */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen
-                      px-6 py-6 md:py-10 text-center">
+      <div
+        className="absolute inset-0 z-10 overflow-y-auto overflow-x-hidden splash-scroll"
+        style={{ WebkitOverflowScrolling: 'touch' }}
+      >
+        <div className="min-h-full flex flex-col items-center justify-center
+                        px-6 py-4 md:py-8 text-center">
 
-        {/* ── Eyebrow (no emoji, larger text + lines) ── */}
+        {/* ── Eyebrow ── */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.1 }}
           className="font-display text-sm md:text-base tracking-[0.55em] uppercase
-                     text-glow-cyan mb-8 flex items-center gap-5"
+                     text-glow-cyan mb-4 md:mb-6 flex items-center gap-3 md:gap-5"
           style={{ textShadow: '0 0 14px rgba(0,212,255,0.55)' }}
         >
-          {/* left line - bigger and more visible than before */}
           <span
             aria-hidden
             className="block"
             style={{
-              width: '88px',
+              width: '72px',
               height: '2px',
               background: 'linear-gradient(to right, transparent, rgba(125,249,255,0.95))',
               boxShadow: '0 0 8px rgba(0,212,255,0.6)',
@@ -442,7 +456,7 @@ export default function IntroSplash({ onEnter }: Props) {
             aria-hidden
             className="block"
             style={{
-              width: '88px',
+              width: '72px',
               height: '2px',
               background: 'linear-gradient(to left, transparent, rgba(125,249,255,0.95))',
               boxShadow: '0 0 8px rgba(0,212,255,0.6)',
@@ -450,17 +464,22 @@ export default function IntroSplash({ onEnter }: Props) {
           />
         </motion.div>
 
-        {/* ── Submarine ── */}
-        <Submarine />
+        {/* ── Submarine - height-capped so it shrinks on short viewports
+              instead of forcing the layout to overflow. ── */}
+        <div className="w-full flex justify-center" style={{ maxHeight: '32vh' }}>
+          <div style={{ maxHeight: '32vh', overflow: 'visible' }}>
+            <Submarine />
+          </div>
+        </div>
 
-        {/* ── Welcome copy (no em-dashes anywhere) ── */}
+        {/* ── Welcome copy ── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.9, ease: 'easeOut' }}
-          className="max-w-2xl mt-6 md:mt-2"
+          className="max-w-2xl mt-4 md:mt-2"
         >
-          <h1 className="font-display text-2xl md:text-4xl text-white glow-text-soft leading-tight">
+          <h1 className="font-display text-xl md:text-3xl xl:text-4xl text-white glow-text-soft leading-tight">
             You&apos;re about to enter a portfolio
             <br className="hidden md:block" />
             <span className="bg-gradient-to-r from-glow-cyan via-glow-ice to-glow-atlantis
@@ -470,7 +489,7 @@ export default function IntroSplash({ onEnter }: Props) {
             </span>
           </h1>
 
-          <p className="mt-5 md:mt-6 text-sm md:text-base text-white/85 leading-relaxed max-w-xl mx-auto">
+          <p className="mt-3 md:mt-5 text-xs md:text-sm xl:text-base text-white/85 leading-relaxed max-w-xl mx-auto">
             You&apos;re looking at a website that runs on my own
             {' '}<span className="text-glow-ice">group of computers at home</span>.
             They <span className="text-glow-ice">work like a team</span>: if one stops
@@ -482,7 +501,7 @@ export default function IntroSplash({ onEnter }: Props) {
           </p>
         </motion.div>
 
-        {/* ── Tool logos row (Built With) ── */}
+        {/* ── Tool logos row ── */}
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
@@ -492,7 +511,7 @@ export default function IntroSplash({ onEnter }: Props) {
         </motion.div>
 
         {/* ── Helm CTA ── */}
-        <div className="mt-8 md:mt-10">
+        <div className="mt-6 md:mt-8">
           <HelmButton onClick={onEnter} label="Take the Helm" />
         </div>
 
@@ -500,11 +519,12 @@ export default function IntroSplash({ onEnter }: Props) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.55 }}
           transition={{ duration: 0.8, delay: 2.2 }}
-          className="mt-6 text-[10px] md:text-xs tracking-[0.3em] uppercase
+          className="mt-4 text-[10px] md:text-xs tracking-[0.3em] uppercase
                      font-display text-white/55"
         >
           Dive in to view the portfolio
         </motion.p>
+        </div>
       </div>
     </motion.div>
   );
