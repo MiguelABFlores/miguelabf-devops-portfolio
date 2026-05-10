@@ -49,7 +49,7 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.35 }}
           className="mt-8 max-w-2xl mx-auto text-base md:text-lg text-white/75 leading-relaxed"
         >
-          I build and operate production-grade infrastructure — self-hosted Kubernetes
+          I build and operate production-grade infrastructure: self-hosted Kubernetes
           clusters, GitOps pipelines, private container registries, and full observability
           stacks. Former SRE at Oracle, now focused on DevOps engineering. The site
           you&apos;re reading runs on my own cluster.
