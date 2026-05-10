@@ -47,6 +47,23 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${inter.variable} ${orbitron.variable}`}>
+      <head>
+        {/*
+          Splash gate — runs synchronously BEFORE the body paints.
+          - First visit:   no class added → static-rendered splash markup
+                           is visible from frame 1 (no portfolio flash).
+          - Repeat visit:  sessionStorage flag is set → adds
+                           `mabf-intro-seen` class to <html>, which a CSS
+                           rule in globals.css uses to display:none the
+                           splash root before React hydrates (no splash
+                           flash either).
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(sessionStorage.getItem('mabf:intro-seen')==='true'){document.documentElement.classList.add('mabf-intro-seen')}}catch(e){}`,
+          }}
+        />
+      </head>
       <body className="antialiased">{children}</body>
     </html>
   );

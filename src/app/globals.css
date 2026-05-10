@@ -172,6 +172,44 @@ body {
   50%       { transform: translateX(-30px) translateY(4px); }
 }
 
+/* Aurora swirls in the upper sky of the splash */
+@keyframes auroraDrift {
+  0%, 100% { transform: translateX(0)    translateY(0)  scaleX(1)    scaleY(1); opacity: 0.55; }
+  50%       { transform: translateX(60px) translateY(-12px) scaleX(1.1) scaleY(0.95); opacity: 0.85; }
+}
+
+/* Distant misty fog drifting across the horizon */
+@keyframes mistDrift {
+  0%, 100% { transform: translateX(-3%); opacity: 0.55; }
+  50%       { transform: translateX(3%);  opacity: 0.75; }
+}
+
+/* Floating bioluminescent particles drifting upward in the splash */
+@keyframes splashSpore {
+  0%   { transform: translate3d(0, 0, 0)       scale(0.6); opacity: 0;   }
+  10%  { opacity: 0.85; }
+  90%  { opacity: 0.85; }
+  100% { transform: translate3d(20px, -120vh, 0) scale(1.1); opacity: 0;   }
+}
+
+/* Subtle glow pulse for atlantean rune segments */
+@keyframes runePulse {
+  0%, 100% { opacity: 0.45; filter: blur(0.5px); }
+  50%       { opacity: 0.95; filter: blur(0px);  }
+}
+
+/* Continuous wheel rotation — pure CSS so framer never has to
+   retime the spin (avoids hover-induced glitch). */
+@keyframes wheelSpin {
+  from { transform: rotate(0deg);   }
+  to   { transform: rotate(360deg); }
+}
+
+/* Splash hide-on-repeat-visit (set by inline script in <head>) */
+html.mabf-intro-seen [data-intro-splash] {
+  display: none !important;
+}
+
 /* Scroll thumb */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: #050a1a; }

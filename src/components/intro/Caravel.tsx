@@ -3,9 +3,13 @@
 import { motion } from 'framer-motion';
 
 /* ───────────────────────────────────────────────────────────────
-   Caravel — three-masted sailing ship rendered inline as SVG.
-   Used in the intro splash. Subtle rocking animation simulates
-   waves; respect prefers-reduced-motion via globals.css.
+   Caravel — Atlantean-style three-master.
+
+   Visual language matches the rest of the portfolio: dark
+   silhouette with cyan/magenta bioluminescent glow accents,
+   translucent jellyfish-bell sails, glowing rune patterns on
+   the hull, lantern orb at the masthead instead of a flag.
+   Subtle rocking simulates waves.
    ─────────────────────────────────────────────────────────────── */
 export default function Caravel() {
   return (
@@ -14,247 +18,349 @@ export default function Caravel() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1.2, delay: 0.3, ease: 'easeOut' }}
       className="relative"
-      style={{ filter: 'drop-shadow(0 16px 28px rgba(0, 60, 100, 0.55))' }}
+      style={{
+        filter: `
+          drop-shadow(0 0 36px rgba(0,212,255,0.32))
+          drop-shadow(0 0 14px rgba(125,249,255,0.20))
+          drop-shadow(0 24px 32px rgba(0,20,40,0.55))
+        `,
+      }}
     >
       <motion.div
-        animate={{ rotate: [-1.4, 1.4, -1.4], y: [0, -6, 0] }}
-        transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
-        style={{ transformOrigin: '50% 78%' }}
+        animate={{ rotate: [-1.6, 1.6, -1.6], y: [0, -7, 0] }}
+        transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut' }}
+        style={{ transformOrigin: '50% 80%', willChange: 'transform' }}
       >
         <svg
-          width="480"
-          height="360"
-          viewBox="0 0 480 360"
+          width="500"
+          height="380"
+          viewBox="0 0 500 380"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden
           style={{ display: 'block' }}
         >
           <defs>
-            {/* Hull gradient — dark wood up top, deeper at the keel */}
-            <linearGradient id="hull" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%"  stopColor="#3a2412" />
-              <stop offset="55%" stopColor="#1f1208" />
-              <stop offset="100%" stopColor="#0a0604" />
+            {/* Hull — deep abyssal gradient with subtle teal sheen */}
+            <linearGradient id="atl-hull" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"  stopColor="#0d2b4a" />
+              <stop offset="55%" stopColor="#06182e" />
+              <stop offset="100%" stopColor="#020a18" />
             </linearGradient>
-            <linearGradient id="hullStripe" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#a06a30" />
-              <stop offset="100%" stopColor="#5e3c18" />
+            {/* Hull rim — glowing cyan trim */}
+            <linearGradient id="atl-rim" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#7df9ff" stopOpacity="0.85" />
+              <stop offset="100%" stopColor="#00d4ff" stopOpacity="0.45" />
             </linearGradient>
-            {/* Sail gradient — luminous canvas lit by a warm sun */}
-            <linearGradient id="sail" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%"  stopColor="#fff8e8" />
-              <stop offset="55%" stopColor="#f0e2b6" />
-              <stop offset="100%" stopColor="#c9b07a" />
-            </linearGradient>
-            <linearGradient id="sailShadow" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%"  stopColor="#000" stopOpacity="0" />
-              <stop offset="100%" stopColor="#000" stopOpacity="0.18" />
-            </linearGradient>
+            {/* Sail — translucent jellyfish-bell tissue with cyan glow */}
+            <radialGradient id="atl-sail" cx="0.5" cy="0.3" r="0.7">
+              <stop offset="0%"   stopColor="#dffaff" stopOpacity="0.88" />
+              <stop offset="40%"  stopColor="#7df9ff" stopOpacity="0.55" />
+              <stop offset="80%"  stopColor="#00d4ff" stopOpacity="0.30" />
+              <stop offset="100%" stopColor="#0a3552" stopOpacity="0.10" />
+            </radialGradient>
+            {/* Mizzen sail — magenta-tinted variant */}
+            <radialGradient id="atl-sail-mag" cx="0.5" cy="0.3" r="0.7">
+              <stop offset="0%"   stopColor="#f5e2ff" stopOpacity="0.85" />
+              <stop offset="40%"  stopColor="#d6a8ff" stopOpacity="0.50" />
+              <stop offset="80%"  stopColor="#b14eff" stopOpacity="0.28" />
+              <stop offset="100%" stopColor="#3a1850" stopOpacity="0.10" />
+            </radialGradient>
+            {/* Lantern orb */}
+            <radialGradient id="atl-lantern" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0%"  stopColor="#fff" stopOpacity="1" />
+              <stop offset="40%" stopColor="#7df9ff" stopOpacity="0.85" />
+              <stop offset="100%" stopColor="#00d4ff" stopOpacity="0" />
+            </radialGradient>
           </defs>
 
-          {/* ── Hull — classic caravel curved profile ── */}
-          {/* main hull */}
+          {/* ═══════════════════════════════════════════════════ */}
+          {/* HULL                                                */}
+          {/* ═══════════════════════════════════════════════════ */}
+          {/* main hull silhouette */}
           <path
-            d="M 70,250
-               C 90,238  150,232  240,232
-               C 330,232  390,238  410,250
-               L 380,302
-               C 360,316  300,322  240,322
-               C 180,322  120,316  100,302 Z"
-            fill="url(#hull)"
-            stroke="#0a0604"
-            strokeWidth="1.5"
+            d="M 80,260
+               C 100,246  166,238  250,238
+               C 334,238  400,246  420,260
+               L 392,316
+               C 372,332  310,338  250,338
+               C 190,338  128,332  108,316 Z"
+            fill="url(#atl-hull)"
+            stroke="url(#atl-rim)"
+            strokeWidth="1.4"
+            strokeOpacity="0.85"
           />
-          {/* upper deck rail (sterncastle / forecastle) */}
+          {/* upper deck wedge (sterncastle/forecastle joining) */}
           <path
-            d="M 80,252
-               L 100,232
-               L 380,232
-               L 400,252 Z"
-            fill="#3a2412"
-            stroke="#0a0604"
+            d="M 88,260
+               L 110,238
+               L 390,238
+               L 412,260 Z"
+            fill="#0a1f38"
+            stroke="url(#atl-rim)"
             strokeWidth="1"
+            strokeOpacity="0.55"
           />
-          {/* hull stripe (decorative band) */}
+          {/* glowing rim line — full hull contour */}
           <path
-            d="M 75,260
-               C 95,252  150,248  240,248
-               C 330,248  385,252  405,260
-               L 402,272
-               C 380,265  320,261  240,261
-               C 160,261  100,265  78,272 Z"
-            fill="url(#hullStripe)"
-            opacity="0.85"
+            d="M 80,260
+               C 100,246  166,238  250,238
+               C 334,238  400,246  420,260"
+            stroke="#7df9ff"
+            strokeOpacity="0.65"
+            strokeWidth="1.2"
+            fill="none"
           />
-          {/* portholes */}
-          {[125, 165, 205, 245, 285, 325, 365].map((x, i) => (
-            <g key={i}>
-              <circle cx={x} cy="282" r="5"   fill="#000" />
-              <circle cx={x} cy="282" r="3.2" fill="#f7c860" opacity="0.85" />
-            </g>
-          ))}
-          {/* sterncastle (raised aft platform) */}
+          {/* belly waterline glow */}
           <path
-            d="M 350,232
-               L 350,210
-               L 408,210
-               L 410,232 Z"
-            fill="#3a2412"
-            stroke="#0a0604"
-            strokeWidth="1"
-          />
-          <rect x="358" y="216" width="14" height="12" fill="#f7c860" opacity="0.55" />
-          <rect x="384" y="216" width="14" height="12" fill="#f7c860" opacity="0.55" />
-          {/* forecastle (raised fore platform) */}
-          <path
-            d="M 70,232
-               L 70,216
-               L 110,216
-               L 100,232 Z"
-            fill="#3a2412"
-            stroke="#0a0604"
-            strokeWidth="1"
+            d="M 108,316 C 150,328 200,332 250,332 C 300,332 350,328 392,316"
+            stroke="#7df9ff"
+            strokeOpacity="0.32"
+            strokeWidth="1.4"
+            fill="none"
           />
 
-          {/* ── Bowsprit (forward jib pole) ── */}
-          <path d="M 70,238 L 14,210" stroke="#1f1208" strokeWidth="4" strokeLinecap="round" />
-          {/* small jib sail */}
-          <path
-            d="M 22,212 L 60,232 L 60,216 Z"
-            fill="url(#sail)"
-            stroke="#7a6230"
-            strokeWidth="0.8"
-            opacity="0.95"
-          />
-
-          {/* ── Three masts — fore, main, mizzen ── */}
-          {/* Foremast */}
-          <line x1="138" y1="232" x2="138" y2="60" stroke="#1f1208" strokeWidth="4" strokeLinecap="round" />
-          <line x1="120" y1="76"  x2="156" y2="76" stroke="#1f1208" strokeWidth="2" />
-          {/* foresail */}
-          <path
-            d="M 102,80
-               C 110,110  130,140  138,160
-               C 146,140  166,110  174,80
-               C 162,76  150,76  138,76
-               C 126,76  114,76  102,80 Z"
-            fill="url(#sail)"
-            stroke="#7a6230"
-            strokeWidth="1"
-          />
-          <path
-            d="M 102,80
-               C 110,110  130,140  138,160
-               C 146,140  166,110  174,80"
-            fill="url(#sailShadow)"
-          />
-          {/* canvas seams */}
-          <path d="M 138,80 L 138,158" stroke="#7a6230" strokeWidth="0.6" opacity="0.55" />
-          <path d="M 118,82 C 124,116 134,144 138,158" stroke="#7a6230" strokeWidth="0.5" opacity="0.40" />
-          <path d="M 158,82 C 152,116 142,144 138,158" stroke="#7a6230" strokeWidth="0.5" opacity="0.40" />
-
-          {/* Mainmast (taller, center) */}
-          <line x1="240" y1="232" x2="240" y2="22" stroke="#1f1208" strokeWidth="5" strokeLinecap="round" />
-          <line x1="216" y1="44"  x2="264" y2="44" stroke="#1f1208" strokeWidth="2.4" />
-          {/* mainsail (large square sail, slightly billowed) */}
-          <path
-            d="M 188,48
-               C 198,90  226,140  240,170
-               C 254,140  282,90  292,48
-               C 274,44  256,44  240,44
-               C 224,44  206,44  188,48 Z"
-            fill="url(#sail)"
-            stroke="#7a6230"
-            strokeWidth="1.1"
-          />
-          <path
-            d="M 188,48
-               C 198,90  226,140  240,170
-               C 254,140  282,90  292,48"
-            fill="url(#sailShadow)"
-          />
-          <path d="M 240,48 L 240,168" stroke="#7a6230" strokeWidth="0.6" opacity="0.55" />
-          <path d="M 212,52 C 220,98 234,148 240,168" stroke="#7a6230" strokeWidth="0.55" opacity="0.40" />
-          <path d="M 268,52 C 260,98 246,148 240,168" stroke="#7a6230" strokeWidth="0.55" opacity="0.40" />
-          {/* crow's nest */}
-          <path d="M 230,42 L 250,42 L 248,32 L 232,32 Z" fill="#3a2412" stroke="#0a0604" strokeWidth="1" />
-          {/* small flag at top */}
-          <path d="M 240,22 L 264,28 L 240,34 Z" fill="#c83030" stroke="#7a1818" strokeWidth="0.8" />
-
-          {/* Mizzenmast (rear, lateen-style triangular sail) */}
-          <line x1="332" y1="232" x2="332" y2="78" stroke="#1f1208" strokeWidth="3.5" strokeLinecap="round" />
-          {/* lateen yard (diagonal spar) */}
-          <line x1="312" y1="160" x2="378" y2="92" stroke="#1f1208" strokeWidth="2.2" />
-          {/* triangular lateen sail */}
-          <path
-            d="M 332,164
-               L 374,96
-               L 332,120 Z"
-            fill="url(#sail)"
-            stroke="#7a6230"
-            strokeWidth="1"
-          />
-          <path
-            d="M 332,164
-               L 374,96
-               L 332,120 Z"
-            fill="url(#sailShadow)"
-          />
-          <path d="M 332,124 L 372,98" stroke="#7a6230" strokeWidth="0.5" opacity="0.45" />
-          <path d="M 332,144 L 358,120" stroke="#7a6230" strokeWidth="0.5" opacity="0.45" />
-
-          {/* ── Rigging — thin lines connecting masts to hull ── */}
-          <g stroke="#a08660" strokeWidth="0.7" opacity="0.55" fill="none">
-            {/* foremast to bowsprit */}
-            <line x1="138" y1="60"  x2="14"  y2="212" />
-            <line x1="138" y1="76"  x2="40"  y2="218" />
-            {/* foremast to deck */}
-            <line x1="138" y1="60"  x2="100" y2="232" />
-            <line x1="138" y1="60"  x2="176" y2="232" />
-            {/* mainmast forward stays */}
-            <line x1="240" y1="22"  x2="138" y2="60" />
-            <line x1="240" y1="44"  x2="180" y2="232" />
-            <line x1="240" y1="44"  x2="300" y2="232" />
-            {/* mainmast aft stays */}
-            <line x1="240" y1="22"  x2="332" y2="78" />
-            {/* mizzenmast stays */}
-            <line x1="332" y1="78"  x2="290" y2="232" />
-            <line x1="332" y1="78"  x2="380" y2="232" />
+          {/* Atlantean rune band along the hull */}
+          <g opacity="0.85" style={{ filter: 'drop-shadow(0 0 4px #00d4ff)' }}>
+            {/* horizontal trim line */}
+            <line x1="118" y1="278" x2="382" y2="278"
+              stroke="#00d4ff" strokeOpacity="0.5" strokeWidth="0.8" />
+            {/* repeated rune motifs */}
+            {[140, 178, 216, 254, 292, 330, 368].map((cx, i) => (
+              <g key={i} transform={`translate(${cx} 278)`}>
+                <path d="M -8,0 L 0,-7 L 8,0 L 0,7 Z"
+                  stroke="#7df9ff" strokeWidth="0.9" fill="none" opacity="0.85" />
+                <circle cx="0" cy="0" r="1.4" fill="#7df9ff" opacity="0.95" />
+              </g>
+            ))}
           </g>
 
-          {/* ── Faint cyan rim glow on sails (ties into portfolio palette) ── */}
+          {/* Glowing portholes */}
+          {[140, 178, 216, 254, 292, 330, 368].map((cx, i) => (
+            <g key={i}>
+              <circle cx={cx} cy="298" r="6" fill="#02101e"
+                stroke="#7df9ff" strokeOpacity="0.55" strokeWidth="0.9" />
+              <circle cx={cx} cy="298" r="3.2"
+                fill="#7df9ff" opacity="0.85"
+                style={{ filter: 'drop-shadow(0 0 3px #00d4ff)' }} />
+            </g>
+          ))}
+
+          {/* Sterncastle (raised aft platform) */}
           <path
-            d="M 188,48
-               C 198,90  226,140  240,170
-               C 254,140  282,90  292,48"
-            fill="none"
+            d="M 360,238
+               L 360,212
+               L 416,212
+               L 420,238 Z"
+            fill="#0a1f38"
+            stroke="url(#atl-rim)"
+            strokeWidth="1"
+            strokeOpacity="0.55"
+          />
+          {/* sterncastle window */}
+          <rect x="372" y="220" width="14" height="12"
+            fill="#7df9ff" opacity="0.55"
+            style={{ filter: 'drop-shadow(0 0 4px #00d4ff)' }} />
+          <rect x="394" y="220" width="14" height="12"
+            fill="#7df9ff" opacity="0.55"
+            style={{ filter: 'drop-shadow(0 0 4px #00d4ff)' }} />
+
+          {/* Forecastle */}
+          <path
+            d="M 80,238
+               L 80,220
+               L 116,220
+               L 110,238 Z"
+            fill="#0a1f38"
+            stroke="url(#atl-rim)"
+            strokeWidth="1"
+            strokeOpacity="0.55"
+          />
+
+          {/* Bowsprit + jib */}
+          <path d="M 80,246 L 18,212"
+            stroke="#06182e" strokeWidth="3.5" strokeLinecap="round" />
+          <path d="M 80,246 L 18,212"
+            stroke="#7df9ff" strokeOpacity="0.4" strokeWidth="0.8" strokeLinecap="round" />
+          {/* small jib sail */}
+          <path
+            d="M 26,214 L 70,238 L 70,222 Z"
+            fill="url(#atl-sail)"
             stroke="#7df9ff"
-            strokeWidth="0.7"
-            opacity="0.30"
+            strokeOpacity="0.65"
+            strokeWidth="0.8"
+          />
+
+          {/* ═══════════════════════════════════════════════════ */}
+          {/* MASTS + SAILS                                       */}
+          {/* ═══════════════════════════════════════════════════ */}
+
+          {/* ── Foremast ── */}
+          <line x1="148" y1="238" x2="148" y2="64"
+            stroke="#06182e" strokeWidth="3.6" strokeLinecap="round" />
+          <line x1="148" y1="238" x2="148" y2="64"
+            stroke="#00d4ff" strokeOpacity="0.18" strokeWidth="0.7" strokeLinecap="round" />
+          {/* yard */}
+          <line x1="124" y1="80" x2="172" y2="80"
+            stroke="#06182e" strokeWidth="2" />
+          {/* foresail */}
+          <path
+            d="M 110,84
+               C 120,114  140,144  148,166
+               C 156,144  176,114  186,84
+               C 174,80  162,80  148,80
+               C 134,80  122,80  110,84 Z"
+            fill="url(#atl-sail)"
+            stroke="#7df9ff"
+            strokeOpacity="0.65"
+            strokeWidth="1"
+          />
+          {/* canvas seams */}
+          <path d="M 148,84 L 148,164"
+            stroke="#7df9ff" strokeOpacity="0.30" strokeWidth="0.6" />
+          <path d="M 128,86 C 134,118 142,148 148,164"
+            stroke="#7df9ff" strokeOpacity="0.22" strokeWidth="0.5" />
+          <path d="M 168,86 C 162,118 154,148 148,164"
+            stroke="#7df9ff" strokeOpacity="0.22" strokeWidth="0.5" />
+          {/* sail glow rim */}
+          <path
+            d="M 110,84
+               C 120,114  140,144  148,166
+               C 156,144  176,114  186,84"
+            fill="none" stroke="#7df9ff" strokeOpacity="0.55" strokeWidth="0.7"
+          />
+
+          {/* ── Mainmast ── */}
+          <line x1="250" y1="238" x2="250" y2="22"
+            stroke="#06182e" strokeWidth="4.5" strokeLinecap="round" />
+          <line x1="250" y1="238" x2="250" y2="22"
+            stroke="#00d4ff" strokeOpacity="0.20" strokeWidth="0.8" strokeLinecap="round" />
+          {/* main yard */}
+          <line x1="222" y1="46" x2="278" y2="46"
+            stroke="#06182e" strokeWidth="2.4" />
+          {/* mainsail (large) */}
+          <path
+            d="M 196,50
+               C 206,94  234,148  250,178
+               C 266,148  294,94  304,50
+               C 286,46  268,46  250,46
+               C 232,46  214,46  196,50 Z"
+            fill="url(#atl-sail)"
+            stroke="#7df9ff"
+            strokeOpacity="0.7"
+            strokeWidth="1.1"
+          />
+          {/* canvas seams */}
+          <path d="M 250,50 L 250,176"
+            stroke="#7df9ff" strokeOpacity="0.32" strokeWidth="0.65" />
+          <path d="M 222,54 C 230,102 244,156 250,176"
+            stroke="#7df9ff" strokeOpacity="0.22" strokeWidth="0.55" />
+          <path d="M 278,54 C 270,102 256,156 250,176"
+            stroke="#7df9ff" strokeOpacity="0.22" strokeWidth="0.55" />
+          {/* sail glow rim */}
+          <path
+            d="M 196,50
+               C 206,94  234,148  250,178
+               C 266,148  294,94  304,50"
+            fill="none" stroke="#7df9ff" strokeOpacity="0.65" strokeWidth="0.8"
+          />
+          {/* small Atlantean sigil on mainsail */}
+          <g transform="translate(250, 110)" opacity="0.6">
+            <circle r="14" stroke="#7df9ff" strokeWidth="0.6" fill="none" />
+            <circle r="9"  stroke="#7df9ff" strokeWidth="0.5" fill="none" />
+            <circle r="4"  fill="#7df9ff" opacity="0.65" />
+            <line x1="0" y1="-14" x2="0" y2="14"
+              stroke="#7df9ff" strokeWidth="0.5" />
+            <line x1="-14" y1="0" x2="14" y2="0"
+              stroke="#7df9ff" strokeWidth="0.5" />
+          </g>
+
+          {/* crow's nest */}
+          <path d="M 240,42 L 260,42 L 258,32 L 242,32 Z"
+            fill="#06182e" stroke="#7df9ff" strokeOpacity="0.55" strokeWidth="0.9" />
+          {/* lantern orb at the masthead (replaces flag) */}
+          <circle cx="250" cy="20" r="8" fill="url(#atl-lantern)"
+            style={{ filter: 'drop-shadow(0 0 12px #00d4ff)' }}
+          />
+          <circle cx="250" cy="20" r="3" fill="#fff" opacity="0.95" />
+
+          {/* ── Mizzenmast (lateen, magenta-tinted sail) ── */}
+          <line x1="346" y1="238" x2="346" y2="86"
+            stroke="#06182e" strokeWidth="3.2" strokeLinecap="round" />
+          <line x1="346" y1="238" x2="346" y2="86"
+            stroke="#b14eff" strokeOpacity="0.15" strokeWidth="0.6" strokeLinecap="round" />
+          {/* lateen yard */}
+          <line x1="324" y1="170" x2="396" y2="98"
+            stroke="#06182e" strokeWidth="2.2" />
+          {/* triangular lateen sail */}
+          <path
+            d="M 346,176
+               L 392,102
+               L 346,128 Z"
+            fill="url(#atl-sail-mag)"
+            stroke="#d6a8ff"
+            strokeOpacity="0.55"
+            strokeWidth="0.9"
           />
           <path
-            d="M 102,80
-               C 110,110  130,140  138,160
-               C 146,140  166,110  174,80"
-            fill="none"
-            stroke="#7df9ff"
-            strokeWidth="0.6"
-            opacity="0.25"
-          />
+            d="M 346,128 L 390,104"
+            stroke="#d6a8ff" strokeOpacity="0.35" strokeWidth="0.5" />
+          <path
+            d="M 346,148 L 374,124"
+            stroke="#d6a8ff" strokeOpacity="0.35" strokeWidth="0.5" />
+
+          {/* ═══════════════════════════════════════════════════ */}
+          {/* RIGGING                                             */}
+          {/* ═══════════════════════════════════════════════════ */}
+          <g stroke="#7df9ff" strokeWidth="0.5" opacity="0.32" fill="none">
+            {/* foremast stays */}
+            <line x1="148" y1="64"  x2="20"  y2="214" />
+            <line x1="148" y1="76"  x2="48"  y2="220" />
+            <line x1="148" y1="64"  x2="108" y2="238" />
+            <line x1="148" y1="64"  x2="188" y2="238" />
+            {/* mainmast forward stays */}
+            <line x1="250" y1="22"  x2="148" y2="64" />
+            <line x1="250" y1="46"  x2="190" y2="238" />
+            <line x1="250" y1="46"  x2="312" y2="238" />
+            {/* mainmast aft stays */}
+            <line x1="250" y1="22"  x2="346" y2="86" />
+            {/* mizzenmast stays */}
+            <line x1="346" y1="86"  x2="304" y2="238" />
+            <line x1="346" y1="86"  x2="396" y2="238" />
+          </g>
+
+          {/* ═══════════════════════════════════════════════════ */}
+          {/* DECK LANTERNS                                        */}
+          {/* ═══════════════════════════════════════════════════ */}
+          <circle cx="92" cy="226" r="2.5" fill="#fff"
+            style={{ filter: 'drop-shadow(0 0 6px #00d4ff)' }} />
+          <circle cx="408" cy="226" r="2.5" fill="#fff"
+            style={{ filter: 'drop-shadow(0 0 6px #00d4ff)' }} />
+
+          {/* ═══════════════════════════════════════════════════ */}
+          {/* WAKE — short streaks under the hull                 */}
+          {/* ═══════════════════════════════════════════════════ */}
+          <g stroke="#7df9ff" strokeOpacity="0.35" strokeWidth="0.9" fill="none">
+            <path d="M 78,338 Q 110,348 158,344" />
+            <path d="M 102,346 Q 160,358 232,352" opacity="0.65" />
+            <path d="M 240,346 Q 320,358 392,346" opacity="0.7" />
+            <path d="M 330,338 Q 380,348 422,338" opacity="0.5" />
+          </g>
         </svg>
       </motion.div>
 
-      {/* Faint reflection in the water below the ship */}
+      {/* Soft cyan reflection glow under the hull */}
       <div
         aria-hidden
-        className="absolute left-1/2 -translate-x-1/2 top-[78%] w-[420px] h-[80px]
-                   pointer-events-none"
+        className="absolute left-1/2 -translate-x-1/2 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse at 50% 0%, rgba(40,80,120,0.55), transparent 65%)',
-          filter: 'blur(3px)',
-          transform: 'translate(-50%, 0) scaleY(-0.55)',
-          opacity: 0.45,
+          top: '78%',
+          width:  '460px',
+          height: '90px',
+          background: 'radial-gradient(ellipse at 50% 0%, rgba(0,212,255,0.40), rgba(125,249,255,0.18) 35%, transparent 70%)',
+          filter: 'blur(8px)',
+          opacity: 0.55,
+          transform: 'translate(-50%, 0) scaleY(-0.6)',
         }}
       />
     </motion.div>

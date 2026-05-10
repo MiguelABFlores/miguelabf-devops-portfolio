@@ -7,35 +7,37 @@ import IntroSplash from './IntroSplash';
 const STORAGE_KEY = 'mabf:intro-seen';
 
 /* ───────────────────────────────────────────────────────────────
-   IntroGate — owns the splash visibility state.
+   IntroGate — owns splash visibility.
 
-   - On first mount, reads sessionStorage. If the user already
-     dismissed the splash this session, we never render it.
-   - While we don't yet know (showIntro === null), render nothing
-     so we don't flash the splash on returning visits within the
-     same session.
-   - On dismiss (helm click), play the dive animation, set the
-     sessionStorage flag, and unmount the splash.
-
-   The portfolio underneath renders independently from this
-   component — so the dive reveals real content, not a loader.
+   First-paint strategy:
+   - SSR / static export: initial state is `true`, so the splash
+     IS in the static HTML. First-time visitors see it from frame 1
+     — no flash of portfolio.
+   - Repeat visitors within a session: an inline script in <head>
+     (see app/layout.tsx) reads sessionStorage synchronously BEFORE
+     paint and adds `mabf-intro-seen` to <html>. globals.css then
+     applies `display:none` to `[data-intro-splash]`, hiding the
+     splash before React hydrates. No flash of splash either.
+   - On hydration, useEffect detects the flag and removes the
+     splash from the React tree cleanly.
    ─────────────────────────────────────────────────────────────── */
 export default function IntroGate() {
-  const [showIntro, setShowIntro] = useState<boolean | null>(null);
+  // Default true so static HTML includes the splash for first visits.
+  const [showIntro, setShowIntro] = useState<boolean>(true);
   const [diving, setDiving]       = useState(false);
 
   useEffect(() => {
+    // Repeat visit detection — the CSS already hid the splash via the
+    // <html> class set by the inline script. This unmounts it cleanly.
     try {
       const seen = sessionStorage.getItem(STORAGE_KEY) === 'true';
-      setShowIntro(!seen);
+      if (seen) setShowIntro(false);
     } catch {
-      // Private browsing / SSR / disabled storage — show splash anyway
-      setShowIntro(true);
+      /* private browsing — keep splash visible */
     }
   }, []);
 
-  /* Lock body scroll while the splash is up so the portfolio doesn't
-     become reachable via scroll while the overlay covers it. */
+  /* Lock body scroll while the splash is up. */
   useEffect(() => {
     if (showIntro) {
       const prev = document.body.style.overflow;
@@ -45,12 +47,10 @@ export default function IntroGate() {
   }, [showIntro]);
 
   function handleEnter() {
-    if (diving) return;        // prevent double-trigger
+    if (diving) return;
     setDiving(true);
     try { sessionStorage.setItem(STORAGE_KEY, 'true'); } catch { /* noop */ }
-
-    // After the dive animation finishes, unmount the splash.
-    // 1.6s exit + small buffer to ensure motion completes.
+    // 1.6s exit + buffer so the dive animation completes cleanly.
     window.setTimeout(() => setShowIntro(false), 1700);
   }
 
@@ -59,8 +59,6 @@ export default function IntroGate() {
       {showIntro && (
         <>
           <IntroSplash key="splash" onEnter={handleEnter} />
-          {/* Bubble streak — only rendered while diving, layered over
-              the splash to sell the downward acceleration. */}
           {diving && <DiveBubbles />}
         </>
       )}
@@ -69,13 +67,12 @@ export default function IntroGate() {
 }
 
 /* ── DiveBubbles — vertical streak of bubbles rushing UP across
-   the screen while the splash dives DOWN. Pure visual polish. ── */
+   the screen while the splash dives DOWN. ── */
 function DiveBubbles() {
-  // Eight bubbles, varied size + horizontal position, staggered.
   const bubbles = Array.from({ length: 14 }).map((_, i) => ({
     id: i,
-    x:        10 + ((i * 67) % 80),       // 10–90% horizontal
-    size:     6 + (i % 4) * 5,            // 6–21px
+    x:        10 + ((i * 67) % 80),
+    size:     6 + (i % 4) * 5,
     delay:    i * 0.06,
     duration: 1.0 + (i % 3) * 0.25,
   }));
