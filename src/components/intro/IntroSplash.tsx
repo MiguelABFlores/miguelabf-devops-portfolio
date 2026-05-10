@@ -317,6 +317,42 @@ export default function IntroSplash({ onEnter }: Props) {
             />
           ))}
         </svg>
+
+        {/* ═══════════════════════════════════════════════════════ */}
+        {/* ABYSS FILL - eliminates the hard horizontal line where  */}
+        {/* the foreground wave SVG used to end. Starts at exactly  */}
+        {/* the wave's bottom y (78 + 140 = 218px) with the SAME    */}
+        {/* color as the wave fill, then gradually darkens to the   */}
+        {/* deep ocean. Seamless transition from waves to abyss.    */}
+        {/* ═══════════════════════════════════════════════════════ */}
+        <div
+          className="absolute inset-x-0 pointer-events-none"
+          style={{
+            top: 218,           // wave 4: top=78px + height=140px
+            bottom: 0,
+            background: `
+              linear-gradient(180deg,
+                #020e1a 0%,
+                #020c18 25%,
+                #010912 55%,
+                #00060e 85%,
+                #00040a 100%)
+            `,
+          }}
+        />
+        {/* Subtle deep-light shimmer drifting in the abyss for life */}
+        <div
+          className="absolute inset-x-0 pointer-events-none mix-blend-screen"
+          style={{
+            top: 218,
+            bottom: 0,
+            background: `
+              radial-gradient(ellipse at 28% 30%, rgba(125,249,255,0.08), transparent 55%),
+              radial-gradient(ellipse at 72% 65%, rgba(125,249,255,0.05), transparent 60%)
+            `,
+            animation: 'mistDrift 22s ease-in-out infinite',
+          }}
+        />
       </div>
 
       {/* ═══════════════════════════════════════════════════════ */}
@@ -410,12 +446,17 @@ export default function IntroSplash({ onEnter }: Props) {
           </h1>
 
           <p className="mt-5 md:mt-6 text-sm md:text-base text-white/85 leading-relaxed max-w-xl mx-auto">
-            This page is served by a <span className="text-glow-ice">5-node Kubernetes cluster</span>
-            {' '}running in my homelab, provisioned with kubeadm on Proxmox. The cluster is
-            managed via <span className="text-glow-ice">GitOps with ArgoCD</span>, deployed
-            from a <span className="text-glow-ice">self-hosted Harbor registry</span>, monitored
-            with <span className="text-glow-ice">Prometheus + Grafana</span>, and served through
-            a <span className="text-glow-ice">Cloudflare Tunnel</span> with zero open inbound ports.
+            This page runs on a <span className="text-glow-ice">private cloud platform</span>
+            {' '}I designed and operate end-to-end. The system is engineered for
+            {' '}<span className="text-glow-ice">guaranteed uptime</span>: servers monitor
+            each other and reroute traffic around failures automatically, with no manual
+            intervention. Every code change reaches production through an
+            {' '}<span className="text-glow-ice">automated GitOps pipeline</span> (deployments
+            triggered by Git commits, not by hand), so releases are predictable and
+            reversible. <span className="text-glow-ice">Real-time observability</span> catches
+            problems before users notice them, and the platform is exposed through a
+            {' '}<span className="text-glow-ice">secure tunnel</span> that keeps every inbound
+            network port closed by default. Reliability, scalability, and security, by design.
           </p>
         </motion.div>
 
