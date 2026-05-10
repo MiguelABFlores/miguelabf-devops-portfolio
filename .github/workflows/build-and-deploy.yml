@@ -1,10 +1,18 @@
 name: Build and Deploy
 
+# Branch model:
+#   main     → production. Builds, pushes :latest + :sha-<sha>, updates GitOps,
+#              triggers ArgoCD sync, smoke-tests miguelabf-devops.com.
+#   develop  → integration. Builds and pushes :dev-<sha> only — no GitOps
+#              update, no ArgoCD sync.
+#   PRs      → build-only smoke test (no push).
+# No paths filter — intentional. Asset-only changes (CV PDF, profile photo)
+# must also trigger a rebuild so the new files are baked into the image.
 on:
   push:
-    branches: [main]
-    # No paths filter — intentional. Asset-only changes (CV PDF, profile photo)
-    # must also trigger a rebuild so the new files are baked into the image.
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
   workflow_dispatch:
 
 env:
@@ -22,11 +30,48 @@ jobs:
       - name: Checkout portfolio source
         uses: actions/checkout@v4
 
-      - name: Set image tag from commit SHA
+      - name: Compute build params
         id: vars
-        run: echo "IMAGE_TAG=sha-${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
+        shell: bash
+        run: |
+          SHORT_SHA=${GITHUB_SHA::8}
+          REG="${HARBOR_REGISTRY}/${HARBOR_PROJECT}/${IMAGE_NAME}"
+
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            # PR build — local only, no push
+            PUSH=false
+            IMAGE_TAG="pr-${{ github.event.pull_request.number }}"
+            TAGS="local/portfolio:${IMAGE_TAG}"
+          elif [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            # Production build — push :sha-<sha> + :latest
+            PUSH=true
+            IMAGE_TAG="sha-${SHORT_SHA}"
+            TAGS="${REG}:sha-${SHORT_SHA}
+          ${REG}:latest"
+          elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
+            # Dev build — push :dev-<sha> only
+            PUSH=true
+            IMAGE_TAG="dev-${SHORT_SHA}"
+            TAGS="${REG}:dev-${SHORT_SHA}"
+          else
+            # workflow_dispatch on a non-default branch — build only
+            PUSH=false
+            IMAGE_TAG="branch-${SHORT_SHA}"
+            TAGS="local/portfolio:${IMAGE_TAG}"
+          fi
+
+          echo "PUSH=${PUSH}" >> "$GITHUB_OUTPUT"
+          echo "IMAGE_TAG=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
+          {
+            echo 'TAGS<<EOF'
+            echo "${TAGS}"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+          echo "Build params: ref=${{ github.ref }} event=${{ github.event_name }} push=${PUSH} tag=${IMAGE_TAG}"
 
       - name: Login to Harbor
+        if: steps.vars.outputs.PUSH == 'true'
         run: |
           echo "${{ secrets.HARBOR_PASSWORD }}" | \
           docker login ${{ env.HARBOR_REGISTRY }} \
@@ -43,22 +88,23 @@ jobs:
             [registry."harbor.192.168.0.240.nip.io"]
               ca=["/etc/ssl/homelab/homelab-ca.crt"]
 
-      - name: Build and push image
+      - name: Build (and conditionally push) image
         uses: docker/build-push-action@v5
         with:
           context: .
           platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.IMAGE_TAG }}
-            ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:latest
+          push: ${{ steps.vars.outputs.PUSH }}
+          tags: ${{ steps.vars.outputs.TAGS }}
 
       - name: Output image tag
-        run: echo "Built and pushed ${{ steps.vars.outputs.IMAGE_TAG }}"
+        run: |
+          echo "Built ${{ steps.vars.outputs.IMAGE_TAG }} (push=${{ steps.vars.outputs.PUSH }})"
 
   update-gitops:
     name: Update GitOps Repo
     needs: build-and-push
+    # PROD-ONLY: only push to main triggers GitOps update + ArgoCD sync.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: [self-hosted, homelab]
     timeout-minutes: 15
     steps:
