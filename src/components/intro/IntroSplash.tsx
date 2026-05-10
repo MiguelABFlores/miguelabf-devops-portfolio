@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Submarine from './Submarine';
 import HelmButton from './HelmButton';
 import { SkyLife, AbyssLife } from './SplashLife';
+import ToolLogos from './ToolLogos';
 
 /* ───────────────────────────────────────────────────────────────
    IntroSplash - full-screen overlay shown before the portfolio.
@@ -481,8 +482,17 @@ export default function IntroSplash({ onEnter }: Props) {
           </p>
         </motion.div>
 
+        {/* ── Tool logos row (Built With) ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.1, ease: 'easeOut' }}
+        >
+          <ToolLogos />
+        </motion.div>
+
         {/* ── Helm CTA ── */}
-        <div className="mt-10 md:mt-12">
+        <div className="mt-8 md:mt-10">
           <HelmButton onClick={onEnter} label="Take the Helm" />
         </div>
 
