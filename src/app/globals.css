@@ -166,6 +166,12 @@ body {
   50%       { opacity: 1.00; transform: scale(1.28); filter: blur(0px); }
 }
 
+/* Intro splash — animated wave layers at the surface waterline */
+@keyframes waveDrift {
+  0%, 100% { transform: translateX(0)     translateY(0); }
+  50%       { transform: translateX(-30px) translateY(4px); }
+}
+
 /* Scroll thumb */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: #050a1a; }

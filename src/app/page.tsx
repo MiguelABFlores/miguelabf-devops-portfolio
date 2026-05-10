@@ -8,10 +8,15 @@ import Certifications from '@/components/Certifications';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 import OceanBackground from '@/components/ocean/OceanBackground';
+import IntroGate from '@/components/intro/IntroGate';
 
 export default function Home() {
   return (
     <>
+      {/* Splash overlay — shows once per session, dives down on click,
+          revealing the portfolio underneath (which is always rendered). */}
+      <IntroGate />
+
       <OceanBackground />
       <Navbar />
       {/* relative + z-10 explicitly stacks content above the fixed ocean
