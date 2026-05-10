@@ -205,6 +205,58 @@ body {
   to   { transform: rotate(360deg); }
 }
 
+/* === Splash sky / abyss life animations === */
+
+/* Bird wing flap */
+@keyframes birdFlap {
+  0%, 100% { transform: scaleY(1);    }
+  50%       { transform: scaleY(0.45); }
+}
+
+/* Bird flock drift - off-screen-right to off-screen-left */
+@keyframes flockDrift {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-140vw); }
+}
+
+/* Shooting star - quick streak across the upper sky.
+   The wrapper translates + fades, the inner div carries a static
+   rotate() so the angle never fights with the keyframe. */
+@keyframes shootStar {
+  0%, 4%   { transform: translate(0, 0);       opacity: 0; }
+  8%       { opacity: 1; }
+  35%      { transform: translate(40vw, 28vh); opacity: 1; }
+  45%      { opacity: 0; }
+  100%     { transform: translate(60vw, 42vh); opacity: 0; }
+}
+
+/* Fish gentle body flap */
+@keyframes fishFlap {
+  0%, 100% { transform: scaleX(1)    skewX(0deg);   }
+  50%       { transform: scaleX(0.96) skewX(-3deg); }
+}
+
+/* Fish school drifting left-to-right */
+@keyframes schoolLTR {
+  0%   { transform: translateX(-220px); }
+  100% { transform: translateX(105vw);  }
+}
+
+/* Fish school drifting right-to-left */
+@keyframes schoolRTL {
+  0%   { transform: translateX(105vw);  }
+  100% { transform: translateX(-220px); }
+}
+
+/* Distant whale - long slow swim with fade in/out so it never
+   pops in or out hard at the edges. */
+@keyframes whaleDrift {
+  0%   { transform: translateX(-360px); opacity: 0; }
+  10%  { opacity: 0.32; }
+  90%  { opacity: 0.32; }
+  100% { transform: translateX(108vw);  opacity: 0; }
+}
+
 /* Splash hide-on-repeat-visit (set by inline script in <head>) */
 html.mabf-intro-seen [data-intro-splash] {
   display: none !important;

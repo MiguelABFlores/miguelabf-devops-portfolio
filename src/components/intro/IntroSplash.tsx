@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import Submarine from './Submarine';
 import HelmButton from './HelmButton';
+import { SkyLife, AbyssLife } from './SplashLife';
 
 /* ───────────────────────────────────────────────────────────────
    IntroSplash - full-screen overlay shown before the portfolio.
@@ -139,6 +140,11 @@ export default function IntroSplash({ onEnter }: Props) {
       {/* LAYER 4 - Volumetric god-rays (SVG-based, no banding)    */}
       {/* ═══════════════════════════════════════════════════════ */}
       <SvgGodRays />
+
+      {/* ═══════════════════════════════════════════════════════ */}
+      {/* LAYER 4.5 - Sky life: bird flocks + shooting stars      */}
+      {/* ═══════════════════════════════════════════════════════ */}
+      <SkyLife />
 
       {/* ═══════════════════════════════════════════════════════ */}
       {/* LAYER 5 - Distant Atlantean spires (horizon silhouette) */}
@@ -351,20 +357,26 @@ export default function IntroSplash({ onEnter }: Props) {
           }}
         />
         {/* Subtle deep-light shimmer drifting in the abyss for life.
-            Top is set further down (260) so its edge sits well inside
-            the abyss, not at the wave/abyss boundary. */}
+            Top is aligned with the abyss fill (212) so there's no
+            secondary edge introduced. The radial gradients fade to
+            transparent well before reaching the top, so the
+            mix-blend-screen produces no visible boundary. */}
         <div
           className="absolute inset-x-0 pointer-events-none mix-blend-screen"
           style={{
-            top: 260,
+            top: 212,
             bottom: 0,
             background: `
-              radial-gradient(ellipse at 28% 40%, rgba(125,249,255,0.06), transparent 60%),
-              radial-gradient(ellipse at 72% 70%, rgba(125,249,255,0.04), transparent 65%)
+              radial-gradient(ellipse at 28% 65%, rgba(125,249,255,0.06), transparent 55%),
+              radial-gradient(ellipse at 72% 80%, rgba(125,249,255,0.04), transparent 60%)
             `,
             animation: 'mistDrift 22s ease-in-out infinite',
           }}
         />
+
+        {/* Abyss life: distant whale + fish schools, swimming
+            below the wave foam in the deep. */}
+        <AbyssLife />
       </div>
 
       {/* ═══════════════════════════════════════════════════════ */}
