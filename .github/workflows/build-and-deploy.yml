@@ -97,9 +97,15 @@ jobs:
           driver-opts: |
             network=host
             image=moby/buildkit:latest
+          # The docker-container BuildKit instance has its own trust store and
+          # does NOT inherit the homelab CA (setup-buildx-action doesn't mount
+          # the ca=[...] file into the container — only the runner/dind trust
+          # it). Without this, every Harbor auth fails x509, breaking both the
+          # image push and the registry cache. Harbor is reachable only on the
+          # private 192.168.0.0/24 LAN, so we skip TLS verification for it here.
           buildkitd-config-inline: |
             [registry."harbor.192.168.0.240.nip.io"]
-              ca=["/etc/ssl/homelab/homelab-ca.crt"]
+              insecure = true
 
       - name: Build (and conditionally push) image
         uses: docker/build-push-action@v5
