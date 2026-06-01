@@ -8,12 +8,23 @@ name: Build and Deploy
 #   PRs      → build-only smoke test (no push).
 # No paths filter — intentional. Asset-only changes (CV PDF, profile photo)
 # must also trigger a rebuild so the new files are baked into the image.
+#
+# Build cache: every build (PRs included) reads/writes a registry-backed
+# BuildKit cache (<registry>/portfolio/site:buildcache). A PR build warms the
+# cache, so the follow-up build on merge replays the npm ci / npm run build
+# layers for both arches instead of rebuilding from scratch.
 on:
   push:
     branches: [main, develop]
   pull_request:
     branches: [main, develop]
   workflow_dispatch:
+
+# Cancel superseded runs to avoid wasting the runner on stale commits.
+# main is exempt — never cancel a production build/deploy mid-flight.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
   HARBOR_REGISTRY: harbor.192.168.0.240.nip.io
@@ -70,8 +81,10 @@ jobs:
 
           echo "Build params: ref=${{ github.ref }} event=${{ github.event_name }} push=${PUSH} tag=${IMAGE_TAG}"
 
+      # Always log in: even PR builds (push=false) write the BuildKit layer
+      # cache to Harbor so the later main/develop build replays it instead of
+      # rebuilding from scratch. Pushing the final image is still gated by PUSH.
       - name: Login to Harbor
-        if: steps.vars.outputs.PUSH == 'true'
         run: |
           echo "${{ secrets.HARBOR_PASSWORD }}" | \
           docker login ${{ env.HARBOR_REGISTRY }} \
@@ -95,6 +108,14 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: ${{ steps.vars.outputs.PUSH }}
           tags: ${{ steps.vars.outputs.TAGS }}
+          # Registry-backed layer cache (covers both arches, mode=max caches
+          # intermediate stages too). PR builds populate it; the merge build
+          # reads it back — npm ci / npm run build become cache replays.
+          cache-from: type=registry,ref=${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
+          # Skip SBOM/provenance attestations: faster, and keeps :latest a clean
+          # multi-arch manifest list instead of an attestation-wrapped index.
+          provenance: false
 
       - name: Output image tag
         run: |
