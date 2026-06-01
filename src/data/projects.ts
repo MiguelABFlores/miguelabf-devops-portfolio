@@ -11,6 +11,18 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    title: 'Ekklesia — Gamification Platform for Catholic Youth Formation',
+    repo: 'https://github.com/MiguelABFlores/ekklesia-platform',
+    description:
+      'A central platform (not a game) that connects multiple games and live dynamics for Catholic youth-formation groups, built to solve low retention and weak sense of belonging. Each in-person session becomes part of a persistent story: every participant keeps a social identity — RPG archetype (7 roles), representative animal (21), equipped saint, visible title and personal tag — assigned through a Pokémon-Mystery-Dungeon-style 12-question personality test at onboarding.\n\nGames consume the platform through an SDK rather than handling their own auth or progress. Independent engines drive XP/levels, achievements and titles, with seasons, special events and competitive rankings. Includes an admin dashboard (Super Admin / Admin / Host / Player roles) and live multiplayer over Socket.IO + Redis. Built as a Turborepo + pnpm monorepo (web, admin, NestJS API, reference trivia game) with shared Zod contracts across frontend and backend, and deployed to Kubernetes via Helm + ArgoCD GitOps with persistent volumes and daily backups.',
+    tech: [
+      'Next.js', 'NestJS', 'TypeScript', 'PostgreSQL', 'Prisma', 'Redis',
+      'Socket.IO', 'Zod', 'Turborepo', 'Docker', 'Helm', 'Kubernetes', 'ArgoCD',
+    ],
+    featured: true,
+    emoji: '⛪',
+  },
+  {
     title: 'Self-Hosted DevOps Platform on Kubernetes',
     repo: 'https://github.com/MiguelABFlores/homelab-gitops',
     liveUrl: 'https://miguelabf-devops.com',
