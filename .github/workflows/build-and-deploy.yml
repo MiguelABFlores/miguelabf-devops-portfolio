@@ -9,10 +9,13 @@ name: Build and Deploy
 # No paths filter — intentional. Asset-only changes (CV PDF, profile photo)
 # must also trigger a rebuild so the new files are baked into the image.
 #
-# Build cache: every build (PRs included) reads/writes a registry-backed
-# BuildKit cache (<registry>/portfolio/site:buildcache). A PR build warms the
-# cache, so the follow-up build on merge replays the npm ci / npm run build
-# layers for both arches instead of rebuilding from scratch.
+# Builds run on dind's built-in BuildKit (the "docker" buildx driver), amd64
+# only — matching the cluster (no arm64 nodes). That driver trusts the homelab
+# CA via /etc/docker/certs.d, unlike a docker-container BuildKit instance.
+# Build cache: dind's persistent local layer cache reuses npm ci / npm run build
+# across builds on this single-pod runner, so a PR build warms the cache for the
+# follow-up merge build; :latest also carries inline cache to warm the final
+# stage after a pod restart.
 on:
   push:
     branches: [main, develop]
@@ -81,9 +84,8 @@ jobs:
 
           echo "Build params: ref=${{ github.ref }} event=${{ github.event_name }} push=${PUSH} tag=${IMAGE_TAG}"
 
-      # Always log in: even PR builds (push=false) write the BuildKit layer
-      # cache to Harbor so the later main/develop build replays it instead of
-      # rebuilding from scratch. Pushing the final image is still gated by PUSH.
+      # Log in on every event: PR builds (push=false) still need Harbor auth to
+      # pull the inline cache from :latest; main/develop builds also push.
       - name: Login to Harbor
         run: |
           echo "${{ secrets.HARBOR_PASSWORD }}" | \
@@ -91,37 +93,30 @@ jobs:
             --username ${{ secrets.HARBOR_USERNAME }} \
             --password-stdin
 
+      # Default "docker" driver = dind's built-in BuildKit, which trusts the
+      # homelab CA via /etc/docker/certs.d. A docker-container BuildKit instance
+      # has its own trust store with no way to inject the LAN CA (buildx doesn't
+      # mount cert files), so it fails x509 against Harbor. This driver is
+      # amd64-only, which is fine — the cluster has no arm64 nodes.
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
-          driver-opts: |
-            network=host
-            image=moby/buildkit:latest
-          # The docker-container BuildKit instance has its own trust store and
-          # does NOT inherit the homelab CA (setup-buildx-action doesn't mount
-          # the ca=[...] file into the container — only the runner/dind trust
-          # it). Without this, every Harbor auth fails x509, breaking both the
-          # image push and the registry cache. Harbor is reachable only on the
-          # private 192.168.0.0/24 LAN, so we skip TLS verification for it here.
-          buildkitd-config-inline: |
-            [registry."harbor.192.168.0.240.nip.io"]
-              insecure = true
+          driver: docker
 
       - name: Build (and conditionally push) image
         uses: docker/build-push-action@v5
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          # No platforms set: the docker driver builds natively for amd64.
           push: ${{ steps.vars.outputs.PUSH }}
           tags: ${{ steps.vars.outputs.TAGS }}
-          # Registry-backed layer cache (covers both arches, mode=max caches
-          # intermediate stages too). PR builds populate it; the merge build
-          # reads it back — npm ci / npm run build become cache replays.
-          cache-from: type=registry,ref=${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:buildcache
-          cache-to: type=registry,ref=${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
-          # Skip SBOM/provenance attestations: faster, and keeps :latest a clean
-          # multi-arch manifest list instead of an attestation-wrapped index.
-          provenance: false
+          # The docker driver can't export a registry (mode=max) cache, so the
+          # builder-stage layers (npm ci / npm run build) are reused from dind's
+          # persistent local cache across builds on this single-pod runner. The
+          # inline cache below is embedded in :latest to warm the final stage
+          # after a pod restart; cache-from is best-effort (skipped if absent).
+          cache-from: type=registry,ref=${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:latest
+          cache-to: type=inline
 
       - name: Output image tag
         run: |
