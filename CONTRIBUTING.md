@@ -7,8 +7,8 @@ pushing changes — the wrong branch can deploy straight to production.
 
 | Branch | Purpose | Auto-deploys to |
 |---|---|---|
-| `production` | Production. Mirrors what's live at miguelabf-devops.com. | ✅ Production cluster — pushes `portfolio/production:latest` + `:sha-<sha>`, ArgoCD sync |
-| `development` | Integration. Daily work merges here. | ⚙️ Pushes `portfolio/development:latest` + `:dev-<sha>` only — no GitOps update, no ArgoCD sync |
+| `production` | Production. Mirrors what's live at miguelabf-devops.com. | ✅ Production — builds `portfolio/production:latest` + `:sha-<sha>`, bumps GitOps (`apps/portfolio`, app `portfolio-prod`, ns `portfolio-prod`); ArgoCD auto-syncs |
+| `development` | Integration. Daily work merges here. | 🔁 Dev preview — builds `portfolio/development:latest` + `:dev-<sha>`, bumps GitOps (`apps/portfolio-dev`, app `portfolio-dev`, ns `portfolio-dev`); ArgoCD auto-syncs to `portfolio-dev.192.168.0.240.nip.io` |
 | `feature/<name>` | Short-lived. One branch per change. Off `development`. | ❌ Build-only on PRs (smoke test) |
 
 > **Note:** the old `main` / `develop` branches are retired. `production`
@@ -39,8 +39,9 @@ CI runs on every push to the PR (build-only — verifies the image still
 builds cleanly on `linux/amd64`, matching the cluster).
 
 Merge to `development` when CI is green. CI on `development` builds and pushes a
-`dev-<sha>` image to Harbor — useful if you want to manually deploy it
-to a test environment, but it does **not** touch production.
+`dev-<sha>` image to Harbor and auto-deploys it to the dev preview at
+`portfolio-dev.192.168.0.240.nip.io` (namespace `portfolio-dev`). It does
+**not** touch production.
 
 ### Releasing to production
 
@@ -52,8 +53,9 @@ gh pr create --base production --head development --title "release: <date or tag
 
 # 3. Watch GitHub Actions:
 #    - build-and-push: builds & pushes :sha-<sha> + :latest to Harbor
-#    - update-gitops:  bumps the image tag in homelab-gitops, commits, syncs
-#                      ArgoCD, and smoke-tests miguelabf-devops.com
+#    - update-gitops:  bumps the image tag in homelab-gitops (apps/portfolio)
+#                      and commits. ArgoCD auto-syncs the portfolio-prod app
+#                      on its own — CI no longer runs `argocd app sync`.
 ```
 
 ### Hotfixes
@@ -100,12 +102,12 @@ docker compose up -d --build    # http://localhost:8080
 
 ## CI matrix at a glance
 
-| Event | Build image | Push to Harbor | Update GitOps | ArgoCD sync |
+| Event | Build image | Push to Harbor | Update GitOps | ArgoCD |
 |---|---|---|---|---|
-| Push to `production` | ✅ | `portfolio/production` `:sha-<sha>` + `:latest` | ✅ | ✅ |
-| Push to `development` | ✅ | `portfolio/development` `:dev-<sha>` + `:latest` | ❌ | ❌ |
+| Push to `production` | ✅ | `portfolio/production` `:sha-<sha>` + `:latest` | ✅ `apps/portfolio` | auto-syncs `portfolio-prod` |
+| Push to `development` | ✅ | `portfolio/development` `:dev-<sha>` + `:latest` | ✅ `apps/portfolio-dev` | auto-syncs `portfolio-dev` |
 | Pull request | ✅ | ❌ (build only) | ❌ | ❌ |
-| `workflow_dispatch` | ✅ | depends on branch | only if production | only if production |
+| `workflow_dispatch` | ✅ | depends on branch | branch's app dir | auto-syncs branch's app |
 
 ## Branch protection (configured in GitHub Settings → Branches)
 
