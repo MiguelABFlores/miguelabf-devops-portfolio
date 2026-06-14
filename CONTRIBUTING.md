@@ -7,17 +7,20 @@ pushing changes — the wrong branch can deploy straight to production.
 
 | Branch | Purpose | Auto-deploys to |
 |---|---|---|
-| `main` | Production. Mirrors what's live at miguelabf-devops.com. | ✅ Production cluster (Harbor `:latest` + `:sha-<sha>`, ArgoCD sync) |
-| `develop` | Integration. Daily work merges here. | ⚙️ Builds `:dev-<sha>` only — no GitOps update, no ArgoCD sync |
-| `feature/<name>` | Short-lived. One branch per change. Off `develop`. | ❌ Build-only on PRs (smoke test) |
+| `production` | Production. Mirrors what's live at miguelabf-devops.com. | ✅ Production cluster (Harbor `:latest` + `:sha-<sha>`, ArgoCD sync) |
+| `development` | Integration. Daily work merges here. | ⚙️ Builds `:dev-<sha>` only — no GitOps update, no ArgoCD sync |
+| `feature/<name>` | Short-lived. One branch per change. Off `development`. | ❌ Build-only on PRs (smoke test) |
+
+> **Note:** the old `main` / `develop` branches are retired. `production`
+> replaces `main`; `development` replaces `develop`. Do not push to `main`.
 
 ## Workflow
 
 ### Normal feature work
 
 ```bash
-# 1. Start from a clean develop
-git checkout develop
+# 1. Start from a clean development
+git checkout development
 git pull
 
 # 2. Cut a feature branch
@@ -27,23 +30,23 @@ git checkout -b feature/<short-name>     # e.g. feature/intro-splash
 git add ...
 git commit -m "..."
 
-# 4. Push and open a PR → develop
+# 4. Push and open a PR → development
 git push -u origin feature/<short-name>
-gh pr create --base develop              # or use GitHub UI
+gh pr create --base development          # or use GitHub UI
 ```
 
 CI runs on every push to the PR (build-only — verifies the image still
-builds cleanly on both `linux/amd64` and `linux/arm64`).
+builds cleanly on `linux/amd64`, matching the cluster).
 
-Merge to `develop` when CI is green. CI on `develop` builds and pushes a
+Merge to `development` when CI is green. CI on `development` builds and pushes a
 `dev-<sha>` image to Harbor — useful if you want to manually deploy it
 to a test environment, but it does **not** touch production.
 
 ### Releasing to production
 
 ```bash
-# 1. Open a release PR from develop → main
-gh pr create --base main --head develop --title "release: <date or tag>"
+# 1. Open a release PR from development → production
+gh pr create --base production --head development --title "release: <date or tag>"
 
 # 2. Review the diff one last time, then merge
 
@@ -55,17 +58,17 @@ gh pr create --base main --head develop --title "release: <date or tag>"
 
 ### Hotfixes
 
-For urgent fixes that can't wait for `develop`:
+For urgent fixes that can't wait for `development`:
 
 ```bash
-git checkout main
+git checkout production
 git pull
 git checkout -b hotfix/<short-name>
 # ... fix, commit ...
 git push -u origin hotfix/<short-name>
-gh pr create --base main
-# After merging, also merge main back into develop:
-git checkout develop && git merge main && git push
+gh pr create --base production
+# After merging, also merge production back into development:
+git checkout development && git merge production && git push
 ```
 
 ## Commit style
@@ -99,15 +102,15 @@ docker compose up -d --build    # http://localhost:8080
 
 | Event | Build image | Push to Harbor | Update GitOps | ArgoCD sync |
 |---|---|---|---|---|
-| Push to `main` | ✅ | `:sha-<sha>` + `:latest` | ✅ | ✅ |
-| Push to `develop` | ✅ | `:dev-<sha>` only | ❌ | ❌ |
+| Push to `production` | ✅ | `:sha-<sha>` + `:latest` | ✅ | ✅ |
+| Push to `development` | ✅ | `:dev-<sha>` only | ❌ | ❌ |
 | Pull request | ✅ | ❌ (build only) | ❌ | ❌ |
-| `workflow_dispatch` | ✅ | depends on branch | only if main | only if main |
+| `workflow_dispatch` | ✅ | depends on branch | only if production | only if production |
 
 ## Branch protection (configured in GitHub Settings → Branches)
 
-- `main`: requires PR, requires `Build & Push to Harbor` status check, no
+- `production`: requires PR, requires `Build & Push to Harbor` status check, no
   direct pushes.
-- `develop`: requires PR from feature branches; direct pushes allowed for
+- `development`: requires PR from feature branches; direct pushes allowed for
   hotfixes only.
-- Default branch is `develop` so PRs target it by default.
+- Default branch is `development` so PRs target it by default.

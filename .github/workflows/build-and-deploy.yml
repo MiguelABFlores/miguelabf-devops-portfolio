@@ -1,11 +1,11 @@
 name: Build and Deploy
 
 # Branch model:
-#   main     → production. Builds, pushes :latest + :sha-<sha>, updates GitOps,
-#              triggers ArgoCD sync, smoke-tests miguelabf-devops.com.
-#   develop  → integration. Builds and pushes :dev-<sha> only — no GitOps
-#              update, no ArgoCD sync.
-#   PRs      → build-only smoke test (no push).
+#   production  → production. Builds, pushes :latest + :sha-<sha>, updates GitOps,
+#                 triggers ArgoCD sync, smoke-tests miguelabf-devops.com.
+#   development → integration. Builds and pushes :dev-<sha> only — no GitOps
+#                 update, no ArgoCD sync.
+#   PRs         → build-only smoke test (no push).
 # No paths filter — intentional. Asset-only changes (CV PDF, profile photo)
 # must also trigger a rebuild so the new files are baked into the image.
 #
@@ -18,16 +18,16 @@ name: Build and Deploy
 # stage after a pod restart.
 on:
   push:
-    branches: [main, develop]
+    branches: [production, development]
   pull_request:
-    branches: [main, develop]
+    branches: [production, development]
   workflow_dispatch:
 
 # Cancel superseded runs to avoid wasting the runner on stale commits.
-# main is exempt — never cancel a production build/deploy mid-flight.
+# production is exempt — never cancel a production build/deploy mid-flight.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/production' }}
 
 env:
   HARBOR_REGISTRY: harbor.192.168.0.240.nip.io
@@ -56,13 +56,13 @@ jobs:
             PUSH=false
             IMAGE_TAG="pr-${{ github.event.pull_request.number }}"
             TAGS="local/portfolio:${IMAGE_TAG}"
-          elif [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          elif [ "${{ github.ref }}" = "refs/heads/production" ]; then
             # Production build — push :sha-<sha> + :latest
             PUSH=true
             IMAGE_TAG="sha-${SHORT_SHA}"
             TAGS="${REG}:sha-${SHORT_SHA}
           ${REG}:latest"
-          elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
+          elif [ "${{ github.ref }}" = "refs/heads/development" ]; then
             # Dev build — push :dev-<sha> only
             PUSH=true
             IMAGE_TAG="dev-${SHORT_SHA}"
@@ -85,7 +85,7 @@ jobs:
           echo "Build params: ref=${{ github.ref }} event=${{ github.event_name }} push=${PUSH} tag=${IMAGE_TAG}"
 
       # Log in on every event: PR builds (push=false) still need Harbor auth to
-      # pull the inline cache from :latest; main/develop builds also push.
+      # pull the inline cache from :latest; production/development builds also push.
       - name: Login to Harbor
         env:
           HARBOR_USERNAME: ${{ secrets.HARBOR_USERNAME }}
@@ -128,8 +128,8 @@ jobs:
   update-gitops:
     name: Update GitOps Repo
     needs: build-and-push
-    # PROD-ONLY: only push to main triggers GitOps update + ArgoCD sync.
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # PROD-ONLY: only push to production triggers GitOps update + ArgoCD sync.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/production'
     runs-on: [self-hosted, homelab]
     timeout-minutes: 15
     steps:
