@@ -1,11 +1,12 @@
 name: Build and Deploy
 
-# Branch model:
-#   production  → production. Builds, pushes :latest + :sha-<sha>, updates GitOps,
-#                 triggers ArgoCD sync, smoke-tests miguelabf-devops.com.
-#   development → integration. Builds and pushes :dev-<sha> only — no GitOps
-#                 update, no ArgoCD sync.
-#   PRs         → build-only smoke test (no push).
+# Branch model (each branch pushes to its own Harbor repo):
+#   production  → portfolio/production. Pushes :latest + :sha-<sha>, updates
+#                 GitOps, triggers ArgoCD sync, smoke-tests miguelabf-devops.com.
+#   development → portfolio/development. Pushes :latest + :dev-<sha> only — no
+#                 GitOps update, no ArgoCD sync.
+#   PRs         → build-only smoke test (no push); cache pulled from the target
+#                 branch's repo.
 # No paths filter — intentional. Asset-only changes (CV PDF, profile photo)
 # must also trigger a rebuild so the new files are baked into the image.
 #
@@ -31,8 +32,10 @@ concurrency:
 
 env:
   HARBOR_REGISTRY: harbor.192.168.0.240.nip.io
+  # Each branch pushes to its own repo under this project:
+  #   production  → portfolio/production
+  #   development → portfolio/development
   HARBOR_PROJECT: portfolio
-  IMAGE_NAME: site
   GITOPS_REPO: MiguelABFlores/homelab-gitops
 
 jobs:
@@ -49,24 +52,39 @@ jobs:
         shell: bash
         run: |
           SHORT_SHA=${GITHUB_SHA::8}
-          REG="${HARBOR_REGISTRY}/${HARBOR_PROJECT}/${IMAGE_NAME}"
+
+          # Resolve the target Harbor repo from the branch. PRs build against the
+          # repo they target (base branch) so the cache warms the right one.
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BRANCH="${{ github.base_ref }}"
+          else
+            BRANCH="${GITHUB_REF#refs/heads/}"
+          fi
+          if [ "$BRANCH" = "production" ]; then
+            REPO="production"
+          else
+            REPO="development"
+          fi
+          REG="${HARBOR_REGISTRY}/${HARBOR_PROJECT}/${REPO}"
+          CACHE_REF="${REG}:latest"
 
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            # PR build — local only, no push
+            # PR build — local only, no push (still pulls the target repo's cache)
             PUSH=false
             IMAGE_TAG="pr-${{ github.event.pull_request.number }}"
             TAGS="local/portfolio:${IMAGE_TAG}"
           elif [ "${{ github.ref }}" = "refs/heads/production" ]; then
-            # Production build — push :sha-<sha> + :latest
+            # Production build — push :sha-<sha> + :latest to portfolio/production
             PUSH=true
             IMAGE_TAG="sha-${SHORT_SHA}"
             TAGS="${REG}:sha-${SHORT_SHA}
           ${REG}:latest"
           elif [ "${{ github.ref }}" = "refs/heads/development" ]; then
-            # Dev build — push :dev-<sha> only
+            # Dev build — push :dev-<sha> + :latest to portfolio/development
             PUSH=true
             IMAGE_TAG="dev-${SHORT_SHA}"
-            TAGS="${REG}:dev-${SHORT_SHA}"
+            TAGS="${REG}:dev-${SHORT_SHA}
+          ${REG}:latest"
           else
             # workflow_dispatch on a non-default branch — build only
             PUSH=false
@@ -76,13 +94,14 @@ jobs:
 
           echo "PUSH=${PUSH}" >> "$GITHUB_OUTPUT"
           echo "IMAGE_TAG=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
+          echo "CACHE_REF=${CACHE_REF}" >> "$GITHUB_OUTPUT"
           {
             echo 'TAGS<<EOF'
             echo "${TAGS}"
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
 
-          echo "Build params: ref=${{ github.ref }} event=${{ github.event_name }} push=${PUSH} tag=${IMAGE_TAG}"
+          echo "Build params: ref=${{ github.ref }} event=${{ github.event_name }} repo=${REPO} push=${PUSH} tag=${IMAGE_TAG}"
 
       # Log in on every event: PR builds (push=false) still need Harbor auth to
       # pull the inline cache from :latest; production/development builds also push.
@@ -116,9 +135,11 @@ jobs:
           # The docker driver can't export a registry (mode=max) cache, so the
           # builder-stage layers (npm ci / npm run build) are reused from dind's
           # persistent local cache across builds on this single-pod runner. The
-          # inline cache below is embedded in :latest to warm the final stage
-          # after a pod restart; cache-from is best-effort (skipped if absent).
-          cache-from: type=registry,ref=${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:latest
+          # inline cache below is embedded in each repo's :latest to warm the
+          # final stage after a pod restart; cache-from targets the branch's own
+          # repo (portfolio/production or portfolio/development) and is
+          # best-effort (skipped if absent).
+          cache-from: type=registry,ref=${{ steps.vars.outputs.CACHE_REF }}
           cache-to: type=inline
 
       - name: Output image tag
@@ -147,7 +168,10 @@ jobs:
       - name: Update image tag in deployment
         run: |
           cd homelab-gitops
-          sed -i "s|image: harbor.192.168.0.240.nip.io/portfolio/site:.*|image: harbor.192.168.0.240.nip.io/portfolio/site:${{ steps.vars.outputs.IMAGE_TAG }}|" \
+          # Production deploys pull from portfolio/production. Match the old
+          # (portfolio/site) or current (portfolio/production) repo so this works
+          # across the cutover and steady state.
+          sed -i -E "s|image: harbor.192.168.0.240.nip.io/portfolio/[^:[:space:]]+:.*|image: harbor.192.168.0.240.nip.io/portfolio/production:${{ steps.vars.outputs.IMAGE_TAG }}|" \
             apps/portfolio/deployment.yaml
           echo "Updated to: ${{ steps.vars.outputs.IMAGE_TAG }}"
           grep "image:" apps/portfolio/deployment.yaml

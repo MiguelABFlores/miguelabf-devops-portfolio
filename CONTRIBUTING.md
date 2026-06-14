@@ -7,8 +7,8 @@ pushing changes — the wrong branch can deploy straight to production.
 
 | Branch | Purpose | Auto-deploys to |
 |---|---|---|
-| `production` | Production. Mirrors what's live at miguelabf-devops.com. | ✅ Production cluster (Harbor `:latest` + `:sha-<sha>`, ArgoCD sync) |
-| `development` | Integration. Daily work merges here. | ⚙️ Builds `:dev-<sha>` only — no GitOps update, no ArgoCD sync |
+| `production` | Production. Mirrors what's live at miguelabf-devops.com. | ✅ Production cluster — pushes `portfolio/production:latest` + `:sha-<sha>`, ArgoCD sync |
+| `development` | Integration. Daily work merges here. | ⚙️ Pushes `portfolio/development:latest` + `:dev-<sha>` only — no GitOps update, no ArgoCD sync |
 | `feature/<name>` | Short-lived. One branch per change. Off `development`. | ❌ Build-only on PRs (smoke test) |
 
 > **Note:** the old `main` / `develop` branches are retired. `production`
@@ -102,8 +102,8 @@ docker compose up -d --build    # http://localhost:8080
 
 | Event | Build image | Push to Harbor | Update GitOps | ArgoCD sync |
 |---|---|---|---|---|
-| Push to `production` | ✅ | `:sha-<sha>` + `:latest` | ✅ | ✅ |
-| Push to `development` | ✅ | `:dev-<sha>` only | ❌ | ❌ |
+| Push to `production` | ✅ | `portfolio/production` `:sha-<sha>` + `:latest` | ✅ | ✅ |
+| Push to `development` | ✅ | `portfolio/development` `:dev-<sha>` + `:latest` | ❌ | ❌ |
 | Pull request | ✅ | ❌ (build only) | ❌ | ❌ |
 | `workflow_dispatch` | ✅ | depends on branch | only if production | only if production |
 
