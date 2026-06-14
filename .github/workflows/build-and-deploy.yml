@@ -183,7 +183,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add apps/portfolio/deployment.yaml
-          git diff --staged --quiet || git commit -m "ci: update portfolio image to sha-${{ steps.vars.outputs.IMAGE_TAG }}"
+          git diff --staged --quiet || git commit -m "ci: update portfolio image to ${{ steps.vars.outputs.IMAGE_TAG }}"
           git push
           # No imperative `argocd app sync` here: the portfolio Application has
           # automated sync (prune + selfHeal), so ArgoCD reconciles this commit
