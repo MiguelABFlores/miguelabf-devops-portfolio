@@ -3,8 +3,9 @@ name: Build and Deploy
 # Branch model (each branch pushes to its own Harbor repo):
 #   production  → portfolio/production. Pushes :latest + :sha-<sha>, updates
 #                 GitOps, triggers ArgoCD sync, smoke-tests miguelabf-devops.com.
-#   development → portfolio/development. Pushes :latest + :dev-<sha> only — no
-#                 GitOps update, no ArgoCD sync.
+#   development → portfolio/development. Pushes :latest + :dev-<sha>, updates
+#                 GitOps (apps/portfolio-dev), syncs the portfolio-dev preview
+#                 app, smoke-tests portfolio-dev.192.168.0.240.nip.io (LAN-only).
 #   PRs         → build-only smoke test (no push); cache pulled from the target
 #                 branch's repo.
 # No paths filter — intentional. Asset-only changes (CV PDF, profile photo)
@@ -222,3 +223,81 @@ jobs:
             exit 1
           fi
           echo "Site is live and healthy!"
+
+  deploy-dev:
+    name: Deploy Dev Preview
+    needs: build-and-push
+    # DEV-ONLY: only push to development triggers the preview deploy. Mirrors
+    # update-gitops but targets the portfolio-dev app / namespace instead of
+    # production. Reachable on the LAN at portfolio-dev.192.168.0.240.nip.io.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/development'
+    runs-on: [self-hosted, homelab]
+    timeout-minutes: 15
+    steps:
+      - name: Set image tag
+        id: vars
+        run: echo "IMAGE_TAG=dev-${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
+
+      - name: Checkout homelab-gitops
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.GITOPS_REPO }}
+          token: ${{ secrets.GITOPS_PAT }}
+          path: homelab-gitops
+
+      - name: Update image tag in dev deployment
+        run: |
+          cd homelab-gitops
+          # Dev preview pulls from portfolio/development. Match any current repo
+          # under portfolio/ so this is robust across edits.
+          sed -i -E "s|image: harbor.192.168.0.240.nip.io/portfolio/[^:[:space:]]+:.*|image: harbor.192.168.0.240.nip.io/portfolio/development:${{ steps.vars.outputs.IMAGE_TAG }}|" \
+            apps/portfolio-dev/deployment.yaml
+          echo "Updated to: ${{ steps.vars.outputs.IMAGE_TAG }}"
+          grep "image:" apps/portfolio-dev/deployment.yaml
+
+      - name: Commit and push to homelab-gitops
+        run: |
+          cd homelab-gitops
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add apps/portfolio-dev/deployment.yaml
+          git diff --staged --quiet || git commit -m "ci: update portfolio-dev image to ${{ steps.vars.outputs.IMAGE_TAG }}"
+          git push
+
+      - name: Install ArgoCD CLI
+        run: |
+          curl -sSL -o /tmp/argocd \
+            https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+          sudo install -m 555 /tmp/argocd /usr/local/bin/argocd
+          argocd version --client
+
+      - name: Trigger ArgoCD sync and wait for healthy
+        run: |
+          argocd login argocd.192.168.0.240.nip.io \
+            --insecure \
+            --grpc-web \
+            --username admin \
+            --password "${{ secrets.ARGOCD_PASSWORD }}"
+
+          echo "Triggering sync..."
+          argocd app sync portfolio-dev --grpc-web
+
+          echo "Waiting for deployment to be healthy..."
+          argocd app wait portfolio-dev \
+            --health \
+            --grpc-web \
+            --timeout 120
+
+          echo "Dev preview deployed!"
+          argocd app get portfolio-dev --grpc-web
+
+      - name: Verify dev preview is responding
+        run: |
+          sleep 10
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://portfolio-dev.192.168.0.240.nip.io)
+          echo "Dev preview returned HTTP $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "WARNING: Dev preview returned $STATUS instead of 200"
+            exit 1
+          fi
+          echo "Dev preview is live at http://portfolio-dev.192.168.0.240.nip.io"
