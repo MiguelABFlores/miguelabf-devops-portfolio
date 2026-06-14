@@ -1,10 +1,11 @@
 name: Build and Deploy
 
 # Branch model (each branch pushes to its own Harbor repo):
-#   production  → portfolio/production. Pushes :latest + :sha-<sha>, updates
-#                 GitOps, triggers ArgoCD sync, smoke-tests miguelabf-devops.com.
-#   development → portfolio/development. Pushes :latest + :dev-<sha> only — no
-#                 GitOps update, no ArgoCD sync.
+#   production  → portfolio/production. Pushes :latest + :sha-<sha> and updates
+#                 GitOps (apps/portfolio). ArgoCD auto-syncs (automated sync on
+#                 the portfolio app) — CI does not run `argocd app sync`.
+#   development → portfolio/development. Pushes :latest + :dev-<sha> and updates
+#                 GitOps (apps/portfolio-dev). ArgoCD auto-syncs the preview.
 #   PRs         → build-only smoke test (no push); cache pulled from the target
 #                 branch's repo.
 # No paths filter — intentional. Asset-only changes (CV PDF, profile photo)
@@ -184,41 +185,6 @@ jobs:
           git add apps/portfolio/deployment.yaml
           git diff --staged --quiet || git commit -m "ci: update portfolio image to sha-${{ steps.vars.outputs.IMAGE_TAG }}"
           git push
-
-      - name: Install ArgoCD CLI
-        run: |
-          curl -sSL -o /tmp/argocd \
-            https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
-          sudo install -m 555 /tmp/argocd /usr/local/bin/argocd
-          argocd version --client
-
-      - name: Trigger ArgoCD sync and wait for healthy
-        run: |
-          argocd login argocd.192.168.0.240.nip.io \
-            --insecure \
-            --grpc-web \
-            --username admin \
-            --password "${{ secrets.ARGOCD_PASSWORD }}"
-
-          echo "Triggering sync..."
-          argocd app sync portfolio --grpc-web
-
-          echo "Waiting for deployment to be healthy..."
-          argocd app wait portfolio \
-            --health \
-            --grpc-web \
-            --timeout 120
-
-          echo "Deployment complete!"
-          argocd app get portfolio --grpc-web
-
-      - name: Verify site is responding
-        run: |
-          sleep 10
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://miguelabf-devops.com)
-          echo "Site returned HTTP $STATUS"
-          if [ "$STATUS" != "200" ]; then
-            echo "WARNING: Site returned $STATUS instead of 200"
-            exit 1
-          fi
-          echo "Site is live and healthy!"
+          # No imperative `argocd app sync` here: the portfolio Application has
+          # automated sync (prune + selfHeal), so ArgoCD reconciles this commit
+          # on its own. CI's job ends at pushing the GitOps change.
