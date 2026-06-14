@@ -72,10 +72,13 @@ jobs:
 
       - name: Login to Harbor
         if: steps.vars.outputs.PUSH == 'true'
+        env:
+          HARBOR_USERNAME: ${{ secrets.HARBOR_USERNAME }}
+          HARBOR_PASSWORD: ${{ secrets.HARBOR_PASSWORD }}
         run: |
-          echo "${{ secrets.HARBOR_PASSWORD }}" | \
-          docker login ${{ env.HARBOR_REGISTRY }} \
-            --username ${{ secrets.HARBOR_USERNAME }} \
+          echo "$HARBOR_PASSWORD" | \
+          docker login "$HARBOR_REGISTRY" \
+            --username "$HARBOR_USERNAME" \
             --password-stdin
 
       - name: Set up Docker Buildx
